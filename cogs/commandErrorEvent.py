@@ -24,25 +24,46 @@ class ErrorEvent(commands.Cog):
             m, s = divmod(error.retry_after, 60)
             h, m = divmod(m, 60)
 
-            wait_msg = ""
+            hour = ""
+            minute = ""
+            second = ""
 
             if int(h) is 1:
-                wait_msg += f"{int} hour, "
+                hour = f"{int(h)} hour"
             elif int(h) >= 2:
-                wait_msg += f"{int} hours, "
+                hour = f"{int(h)} hours"
 
             if int(m) is 1:
-                wait_msg += f"{int} minute, "
+                minute = f"{int(m)} minute"
             elif int(m) >= 2:
-                wait_msg += f"{int} minutes, "
+                minute = f"{int(m)} minutes"
 
             if int(s) is 1:
-                wait_msg += f"{int} second"
+                second = f"{int(s)} second"
             elif int(s) >= 2:
-                wait_msg += f"{int} seconds"
-            elif len(wait_msg) >= 2:
-                if wait_msg[len(wait_msg) - 2:] is "":
-                    wait_msg = wait_msg[len(wait_msg) - 2:]
+                second = f"{int(s)} seconds"
+
+            wait_msg = ""
+
+            # single
+            if hour is "" and minute is "":
+                wait_msg = second
+            elif hour is "" and second is "":
+                wait_msg = minute
+            elif minute is "" and second is "":
+                wait_msg = hour
+
+            # double
+            if hour is not "" and minute is not "" and second is "":
+                wait_msg = f"{hour} and {minute}"
+            elif hour is not "" and second is not "" and minute is "":
+                wait_msg = f"{hour} and {second}"
+            elif minute is not "" and second is not "" and hour is "":
+                wait_msg = f"{minute} and {second}"
+
+            # triple
+            if hour is not "" and minute is not "" and second is not "":
+                wait_msg = f"{hour}, {minute} and {second}"
 
             await ctx.send(f"You must wait {wait_msg} to use this command again!")
 
