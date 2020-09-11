@@ -59,7 +59,7 @@ async def on_message(message):
 
 
 if __name__ == '__main__':
-    for file in os.listdir(f"{json_helper.get_cwd()}\\cogs"):
+    for file in os.listdir(f"{json_helper.get_cwd()}/cogs"):
         if file.endswith(".py") and not file.startswith("_"):
             bot.load_extension(f"cogs.{file[:-3]}")
 
