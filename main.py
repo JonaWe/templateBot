@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import logging
 import os
+import asyncio
 
 import json_helper
 import embed_helper
@@ -47,15 +48,22 @@ bot.DEFAULTPREFIX = '-'
 async def on_ready():
     bot.blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
 
-    await bot.change_presence(activity=discord.Game(name=f"on {len(bot.guilds)} servers. Use -help to start!"))
+    bot.loop.create_task(status_task)
 
     print(f"---------\nlogged in as {bot.user}\n---------")
 
 
 @bot.event
+async def status_task():
+    while True:
+        await bot.change_presence(activity=discord.Game(name=f"on {len(bot.guilds)} servers. Use -help to start!"),
+                                  status=discord.Status.online)
+        await asyncio.sleep(10)
+
+
+@bot.event
 async def on_message(message):
     return
-
 
 
 if __name__ == '__main__':

@@ -24,12 +24,25 @@ class ErrorEvent(commands.Cog):
             m, s = divmod(error.retry_after, 60)
             h, m = divmod(m, 60)
 
-            if h is 0 and m is 0:
-                wait_msg = f"{int(s)} seconds"
-            elif h is 0:
-                wait_msg = f"{int(m)} minutes and {int(s)} seconds"
-            else:
-                wait_msg = f"{int(h)} hour, {int(m)} minutes and {int(s)} seconds"
+            wait_msg = ""
+
+            if int(h) is 1:
+                wait_msg += f"{int} hour, "
+            elif int(h) >= 2:
+                wait_msg += f"{int} hours, "
+
+            if int(m) is 1:
+                wait_msg += f"{int} minute, "
+            elif int(m) >= 2:
+                wait_msg += f"{int} minutes, "
+
+            if int(s) is 1:
+                wait_msg += f"{int} second"
+            elif int(s) >= 2:
+                wait_msg += f"{int} seconds"
+            elif len(wait_msg) >= 2:
+                if wait_msg[len(wait_msg) - 2:] is "":
+                    wait_msg = wait_msg[len(wait_msg) - 2:]
 
             await ctx.send(f"You must wait {wait_msg} to use this command again!")
 
