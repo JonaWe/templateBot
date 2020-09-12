@@ -5,12 +5,8 @@ import os
 import asyncio
 
 import json_helper
-import embed_helper
 
-# todo roll dice
-# todo coin flip
-# todo random team generator
-# todo quote command
+
 # todo watchtogether
 # todo skribble
 # todo vier gewinnt
@@ -48,7 +44,7 @@ bot.DEFAULTPREFIX = '-'
 async def on_ready():
     bot.blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
 
-    bot.loop.create_task(status_task)
+    bot.loop.create_task(status_task())
 
     print(f"---------\nlogged in as {bot.user}\n---------")
 
@@ -58,17 +54,21 @@ async def status_task():
     while True:
         await bot.change_presence(activity=discord.Game(name=f"on {len(bot.guilds)} servers. Use -help to start!"),
                                   status=discord.Status.online)
-        await asyncio.sleep(10)
-
-
-@bot.event
-async def on_message(message):
-    return
+        await asyncio.sleep(60)
 
 
 if __name__ == '__main__':
-    for file in os.listdir(f"{json_helper.get_cwd()}/cogs"):
-        if file.endswith(".py") and not file.startswith("_"):
-            bot.load_extension(f"cogs.{file[:-3]}")
+    cwd = json_helper.get_cwd()
+    token = json_helper.read_json("token")["token"]
 
-    bot.run(json_helper.read_json("token")["token"])
+    # loading event cogs
+    for file in os.listdir(f"{cwd}/cogs/events"):
+        if file.endswith(".py"):
+            bot.load_extension(f"cogs.events.{file[:-3]}")
+
+    # loading command cogs
+    for file in os.listdir(f"{cwd}/cogs/commands"):
+        if file.endswith(".py"):
+            bot.load_extension(f"cogs.commands.{file[:-3]}")
+
+    bot.run(token)
