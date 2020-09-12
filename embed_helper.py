@@ -36,12 +36,12 @@ async def send_stats_embed(ctx, bot: commands.Bot):
     embed.timestamp = ctx.message.created_at
     embed.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
 
-    embed.add_field(name="Total Servers", value=str(len(bot.guilds)))
-    embed.add_field(name="Total Users", value=str(len(set(bot.get_all_members()))))
+    embed.add_field(name="Total Servers", value=str(bot.total_server))
+    embed.add_field(name="Total Users", value=str(bot.total_user))
     embed.add_field(name="Bot Version", value=str(bot.version))
     embed.add_field(name="Running on", value=f"Python {python_version()}")
     embed.add_field(name="Author", value=bot.author_mention)
 
-    embed.set_footer(text=f"Beep Boop • {bot.user.name}")
+    embed.set_footer(text=f"{bot.user.name}")
 
     await ctx.send(embed=embed)

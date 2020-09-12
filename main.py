@@ -6,7 +6,6 @@ import asyncio
 
 import json_helper
 
-
 # todo watchtogether
 # todo skribble
 # todo vier gewinnt
@@ -33,8 +32,12 @@ bot = commands.Bot(command_prefix=get_prefix,
                    case_insensitive=True)
 
 bot.version = 1.0
-bot.blacklisted_users = []
 bot.author_mention = "<@306139277195083776>"
+bot.blacklisted_users = []
+
+bot.total_user = -1
+bot.total_server = -1
+
 bot.embed_colour = discord.Colour.gold()
 bot.emoji = {"repeat": "\U0001F501"}
 bot.DEFAULTPREFIX = '-'
@@ -44,15 +47,24 @@ bot.DEFAULTPREFIX = '-'
 async def on_ready():
     bot.blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
 
+    bot.loop.create_task(update_task())
     bot.loop.create_task(status_task())
 
     print(f"---------\nlogged in as {bot.user}\n---------")
 
 
 @bot.event
+async def update_task():
+    bot.total_server = len(bot.guilds)
+    bot.total_user = len(set(bot.get_all_members()))
+    await asyncio.sleep(60)
+
+
+@bot.event
 async def status_task():
     while True:
-        await bot.change_presence(activity=discord.Game(name=f"on {len(bot.guilds)} servers. Use -help to start!"),
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
+                                                            name=f"{bot.total_server} servers | {bot.DEFAULTPREFIX}help to start!"),
                                   status=discord.Status.online)
         await asyncio.sleep(60)
 

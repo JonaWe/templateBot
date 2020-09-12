@@ -21,7 +21,7 @@ class UserCommands(commands.Cog):
         await embed_helper.send_coin_flip_embed(ctx.author, ctx, self.bot)
 
     @commands.command(aliases=['botinfo', 'info'])
-    @commands.cooldown(1, 1000, commands.BucketType.user)
+    # @commands.cooldown(1, 1000, commands.BucketType.user)
     async def stats(self, ctx):
         """
         Displays stats about this bot.

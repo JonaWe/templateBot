@@ -20,20 +20,24 @@ class MessageEvent(commands.Cog):
 
         # dm message to the bot
         if isinstance(message.channel, discord.DMChannel):
-            return
+            pass
+            # return
 
         # message is not in bot-commands channel
-        # if message.channel.name != "bot-commands":
+        if message.channel.name != "bot-commands":
+            pass
             # return
 
         # author is blacklisted
         if message.author.id in self.bot.blacklisted_users:
             return
 
-        await self.bot.process_commands(message)
+        # processing the commands
+        # await self.bot.process_commands(message)
 
         prefix = json_helper.get_prefix(message.guild.id, self.bot)
 
+        # checking if a message should be deleted
         if message.content.startswith(f"{prefix}coinflip") \
                 or message.content.startswith(f"{prefix}flip") \
                 or message.content.startswith(f"{prefix}coin") \
@@ -42,6 +46,7 @@ class MessageEvent(commands.Cog):
                 or message.content.startswith(f"{prefix}roll"):
             await message.delete()
 
+        # if the bot gets mentioned it replies
         if f"<@!{self.bot.user.id}>" in message.content:
             await message.channel.send(f"I have heard my name.\nIf you need my help use "
                                        f"`{prefix}help`"
