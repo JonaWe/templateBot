@@ -3,7 +3,7 @@ from discord.ext import commands
 import json_helper
 
 
-class ErrorEvent(commands.Cog):
+class CommandErrorEvent(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -73,4 +73,4 @@ class ErrorEvent(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ErrorEvent(bot))
+    bot.add_cog(CommandErrorEvent(bot))

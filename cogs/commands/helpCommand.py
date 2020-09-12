@@ -1,3 +1,5 @@
+import os
+
 import discord
 import re
 import math
@@ -13,23 +15,22 @@ class Help(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    """"@commands.command(name='help',
-                      aliases=['h', 'commands'],
+    @commands.command(name='help',
+                      aliases=['h', 'commands', 'command'],
                       description='Help command!')
     async def help(self, ctx, cog="1"):
         embed = discord.Embed()
 
         embed.set_thumbnail(url=ctx.author.avatar_url)
-        embed.title = "Available commends!"
+        embed.title = "Available commands!"
 
         # list of all cogs
         cogs = [c for c in self.bot.cogs.keys()]
 
-        # remove all the cogs without commands
-        cogs.remove("Template")
-        cogs.remove("ReactionEvent")
-        cogs.remove("MessageEvent")
-        cogs.remove("ErrorEvent")
+        # removes all the event cogs from cogs list
+        for file in os.listdir(f"{self.bot.cwd}/cogs/events"):
+            if file.endswith(".py"):
+                cogs.remove(str(file[:-3]))
 
         # check if the cog argument is a number
         # -> opening a specific help page
@@ -56,7 +57,7 @@ class Help(commands.Cog):
             return
 
         # sending the help embed to the ctx channel
-        await ctx.send(embed=embed)"""
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

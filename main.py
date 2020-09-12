@@ -3,6 +3,7 @@ from discord.ext import commands
 import logging
 import os
 import asyncio
+from pathlib import Path
 
 import json_helper
 
@@ -28,7 +29,7 @@ def get_prefix(bot1, ctx):
 # bot setup
 bot = commands.Bot(command_prefix=get_prefix,
                    owner_id=306139277195083776,
-                   # help_command=None,
+                   help_command=None,
                    case_insensitive=True)
 
 bot.version = 1.0
@@ -37,6 +38,8 @@ bot.blacklisted_users = []
 
 bot.total_user = -1
 bot.total_server = -1
+
+bot.cwd = str(Path(__file__).parent)
 
 bot.embed_colour = discord.Colour.gold()
 bot.emoji = {"repeat": "\U0001F501"}
@@ -72,16 +75,15 @@ async def status_task():
 
 
 if __name__ == '__main__':
-    cwd = json_helper.get_cwd()
     token = json_helper.read_json("token")["token"]
 
     # loading event cogs
-    for file in os.listdir(f"{cwd}/cogs/events"):
+    for file in os.listdir(f"{bot.cwd}/cogs/events"):
         if file.endswith(".py"):
             bot.load_extension(f"cogs.events.{file[:-3]}")
 
     # loading command cogs
-    for file in os.listdir(f"{cwd}/cogs/commands"):
+    for file in os.listdir(f"{bot.cwd}/cogs/commands"):
         if file.endswith(".py"):
             bot.load_extension(f"cogs.commands.{file[:-3]}")
 
