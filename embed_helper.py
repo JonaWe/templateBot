@@ -40,7 +40,8 @@ async def send_stats_embed(ctx, bot: commands.Bot):
     embed.add_field(name="Total Users", value=str(bot.total_user))
     embed.add_field(name="Bot Version", value=str(bot.version))
     embed.add_field(name="Running on", value=f"Python {python_version()}")
-    embed.add_field(name="Author", value=bot.author_mention)
+    embed.add_field(name="Discord.py Version", value=f"{discord.__version__}")
+    embed.add_field(name="Developer", value=bot.author_mention)
 
     embed.set_footer(text=f"{bot.user.name}")
 

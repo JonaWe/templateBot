@@ -47,10 +47,12 @@ bot.DEFAULTPREFIX = '-'
 async def on_ready():
     bot.blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
 
+    print(f"---------\nlogged in as {bot.user}\n---------")
+
+    await update_task()
+
     bot.loop.create_task(update_task())
     bot.loop.create_task(status_task())
-
-    print(f"---------\nlogged in as {bot.user}\n---------")
 
 
 @bot.event
