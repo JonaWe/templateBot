@@ -28,7 +28,7 @@ class UserCommands(commands.Cog):
         """
         await embed_helper.send_stats_embed(ctx, self.bot)
 
-    @commands.command(aliases=['roll dice', 'roll'])
+    @commands.command(aliases=['roll dice', 'roll', 'rtd'])
     async def dice(self, ctx, *number):
         """
         Rolls a dice from 1-6. If you add a number after the command you can set the dice range.

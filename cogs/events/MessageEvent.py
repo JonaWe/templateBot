@@ -43,6 +43,7 @@ class MessageEvent(commands.Cog):
                 or message.content.startswith(f"{prefix}coin") \
                 or message.content.startswith(f"{prefix}dice") \
                 or message.content.startswith(f"{prefix}roll dice") \
+                or message.content.startswith(f"{prefix}rtd") \
                 or message.content.startswith(f"{prefix}roll"):
             await message.delete()
 
