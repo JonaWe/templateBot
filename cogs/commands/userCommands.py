@@ -55,6 +55,11 @@ class UserCommands(commands.Cog):
         """
         await ctx.channel.purge(limit=amount + 1)
 
+    @commands.command(name='test',
+                      aliases=['t'])
+    @commands.cooldown(1, 1*60*60*24, commands.BucketType.user)
+    async def born(self, ctx):
+        await ctx.send("hey")
 
 def setup(bot):
     bot.add_cog(UserCommands(bot))

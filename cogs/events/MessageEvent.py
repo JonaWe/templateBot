@@ -13,7 +13,7 @@ class MessageEvent(commands.Cog):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         # message from the bot
         if message.author == self.bot.user:
             return
@@ -24,8 +24,9 @@ class MessageEvent(commands.Cog):
             # return
 
         # message is not in bot-commands channel
-        if message.channel.name != "bot-commands":
-            pass
+        # todo check if the channel is a private channel
+        #if message.channel.name != "bot-commands":
+        #    pass
             # return
 
         # author is blacklisted
@@ -35,8 +36,9 @@ class MessageEvent(commands.Cog):
         # processing the commands
         # await self.bot.process_commands(message)
 
-        prefix = json_helper.get_prefix(message.guild.id, self.bot)
-
+        #todo check for private channel
+        #prefix = json_helper.get_prefix(message.guild.id, self.bot)
+        prefix = '-'
         # checking if a message should be deleted
         if message.content.startswith(f"{prefix}coinflip") \
                 or message.content.startswith(f"{prefix}flip") \
@@ -45,7 +47,8 @@ class MessageEvent(commands.Cog):
                 or message.content.startswith(f"{prefix}roll dice") \
                 or message.content.startswith(f"{prefix}rtd") \
                 or message.content.startswith(f"{prefix}roll"):
-            await message.delete()
+            pass
+            # await message.delete()
 
         # if the bot gets mentioned it replies
         if f"<@!{self.bot.user.id}>" in message.content:

@@ -13,66 +13,108 @@ class CommandErrorEvent(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.ext.commands.context.Context, error):
-        if isinstance(error, commands.TooManyArguments):
-            await ctx.send(
-                f"Too many arguments for `{ctx.command}`! Use `{ctx.prefix}"
-                f"help {ctx.command}` for more info about this command.")
-        elif isinstance(error, commands.UserInputError):
-            await ctx.send(
-                f"You have used this command incorrectly! Use `{ctx.prefix}"
-                f"help {ctx.command}` for more info about this command.")
-        elif isinstance(error, commands.CommandNotFound):
-            await ctx.send(f"This command does not exist!\nUse `{ctx.prefix}"
-                           f"help` for a list of the available commends.")
-        elif isinstance(error, commands.CommandOnCooldown):
-            m, s = divmod(error.retry_after, 60)
-            h, m = divmod(m, 60)
+        is_error_type = lambda e: isinstance(error, e)
 
-            hour = ""
-            minute = ""
-            second = ""
+        if is_error_type(commands.CommandError):
+            if is_error_type(commands.UserInputError):
+                if is_error_type(commands.TooManyArguments):
+                    await ctx.send(
+                        f"Too many arguments for `{ctx.command}`! Use `{ctx.prefix}"
+                        f"help {ctx.command}` for more info about this command.")
+                else:
+                    await ctx.send(
+                        f"You have used this command incorrectly! Use `{ctx.prefix}"
+                        f"help {ctx.command}` for more info about this command.")
+            elif is_error_type(commands.CommandNotFound):
+                await ctx.send(f"This command does not exist!\nUse `{ctx.prefix}"
+                               f"help` for a list of the available commends.")
+            elif is_error_type(commands.CommandOnCooldown):
+                m, s = divmod(error.retry_after, 60)
+                h, m = divmod(m, 60)
+                d, h = divmod(h, 24)
 
-            if int(h) is 1:
-                hour = f"{int(h)} hour"
-            elif int(h) >= 2:
-                hour = f"{int(h)} hours"
+                day = None
+                hour = None
+                minute = None
+                second = None
 
-            if int(m) is 1:
-                minute = f"{int(m)} minute"
-            elif int(m) >= 2:
-                minute = f"{int(m)} minutes"
+                if int(d) is 1:
+                    day = f"{int(h)} day"
+                elif int(d) >= 2:
+                    day = f"{int(h)} days"
 
-            if int(s) is 1:
-                second = f"{int(s)} second"
-            elif int(s) >= 2:
-                second = f"{int(s)} seconds"
+                if int(h) is 1:
+                    hour = f"{int(h)} hour"
+                elif int(h) >= 2:
+                    hour = f"{int(h)} hours"
 
-            wait_msg = ""
+                if int(m) is 1:
+                    minute = f"{int(m)} minute"
+                elif int(m) >= 2:
+                    minute = f"{int(m)} minutes"
 
-            # single
-            if hour is "" and minute is "":
-                wait_msg = second
-            elif hour is "" and second is "":
-                wait_msg = minute
-            elif minute is "" and second is "":
-                wait_msg = hour
+                if int(s) is 1:
+                    second = f"{int(s)} second"
+                elif int(s) >= 2:
+                    second = f"{int(s)} seconds"
 
-            # double
-            if hour is not "" and minute is not "" and second is "":
-                wait_msg = f"{hour} and {minute}"
-            elif hour is not "" and second is not "" and minute is "":
-                wait_msg = f"{hour} and {second}"
-            elif minute is not "" and second is not "" and hour is "":
-                wait_msg = f"{minute} and {second}"
+                wait_msg = ""
 
-            # triple
-            if hour is not "" and minute is not "" and second is not "":
-                wait_msg = f"{hour}, {minute} and {second}"
+                if day:
+                    if hour:
+                        if minute:
+                            if second:
+                                wait_msg = f"{day}, {hour}, {minute} and {second}"
+                            else:
+                                wait_msg = f"{day}, {hour} and {minute}"
+                        else:
+                            if second:
+                                wait_msg = f"{day}, {hour} and {second}"
+                            else:
+                                wait_msg = f"{day} and {hour}"
+                    else:
+                        if minute:
+                            if second:
+                                wait_msg = f"{day}, {minute} and {second}"
+                            else:
+                                wait_msg = f"{day} and {minute}"
+                        else:
+                            if second:
+                                wait_msg = f"{day} and {second}"
+                            else:
+                                wait_msg = f"{day}"
+                else:
+                    if hour:
+                        if minute:
+                            if second:
+                                wait_msg = f"{hour}, {minute} and {second}"
+                            else:
+                                wait_msg = f"{hour} and {minute}"
+                        else:
+                            if second:
+                                wait_msg = f"{hour} and {second}"
+                            else:
+                                wait_msg = f"{hour}"
+                    else:
+                        if minute:
+                            if second:
+                                wait_msg = f"{minute} and {second}"
+                            else:
+                                wait_msg = f"{minute}"
+                        else:
+                            wait_msg = f"{second}"
 
-            await ctx.send(f"You must wait {wait_msg} to use this command again!")
+                await ctx.send(f"You must wait {wait_msg} to use this command again!")
+            elif is_error_type(commands.CheckFailure):
+                if is_error_type(commands.NoPrivateMessage):
+                    await ctx.send("No Private Message")
+                elif is_error_type(commands.NSFWChannelRequired):
+                    await ctx.send("NSFW channel required")
+                elif is_error_type(commands.MissingPermissions):
+                    await ctx.send("You lack permissions to use this command")
+                elif is_error_type(commands.BotMissingPermissions):
+                    await ctx.send("I dont have the required permissions to execute this command")
 
-        elif isinstance(error, commands.CheckFailure):
-            await ctx.send("You don't have permissions to use this command.")
         raise error
 
 
