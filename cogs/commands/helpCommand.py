@@ -16,12 +16,16 @@ class Help(commands.Cog):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
     @commands.command(name='help',
+                      description='Help command',
                       aliases=['h', 'commands', 'command'])
-    async def help(self, ctx, cog="1"):
+    async def help(self, ctx: discord.ext.commands.context.Context, *command):
         """
-        Help command!
+        Use the help command to get a list of all the available command. If you want to know more about a command use the help command with the other command as an parameter.
         """
-        embed = discord.Embed(colour=self.bot.embed_colour)
+
+        # raising error when more than one argument is found
+        if len(command) > 1:
+            raise discord.ext.commands.TooManyArguments(f"One argument was expected. Instead found {len(command)} arguments")
 
         # list of all cogs
         cogs = [c for c in self.bot.cogs.keys()]
@@ -33,17 +37,8 @@ class Help(commands.Cog):
 
         # check if the cog argument is a number
         # -> opening a specific help page
-        if cog.isnumeric():
-            total_pages = math.ceil(len(cogs) / 4)
-            current_page = int(cog)
-
-            # check for an invalid page number
-            if current_page > total_pages or current_page < 1:
-                await ctx.send(
-                    f"Invalid page number: `{current_page}`. Use a page number between `1` and `{total_pages}`")
-                return
-
-            prefix = json_helper.get_prefix(ctx.guild.id, self.bot)
+        if not command:
+            embed = discord.Embed(colour=self.bot.embed_colour)
 
             embed.title = "Available commands!"
 
@@ -59,22 +54,23 @@ class Help(commands.Cog):
                         continue
 
                     # command description is empty if there is none
-                    command_desc = f" - *{command.help}*" if command.help else ""
+                    command_desc = f" - *{command.description}*" if command.description else ""
 
-                    command_list += f"{prefix}**{command.name}**{command_desc}\n"
+                    command_list += f"{ctx.prefix}**{command.name}**{command_desc}\n"
 
                 command_list += "\uFEFF"
                 embed.add_field(name=c, value=command_list, inline=False)
 
-        # checking if the cog argument is a string
-        # -> opening a help page for a command
-        elif re.search(r"[a-zA-Z]", cog):
+            # sending the help message and ending the function
+            await ctx.send(embed=embed)
+            return
+
+        elif re.search(r"[a-zA-Z]", str(command)):
+            cog = command[0]
             command_found = False
 
             for c in cogs:
                 for command in self.bot.get_cog(c).walk_commands():
-                    print(f"{command.name.lower()} : {cog.lower()}")
-
                     cog_is_alias = False
                     for alias in command.aliases:
                         cog_is_alias |= str(alias.lower()) == str(cog.lower())
@@ -85,31 +81,40 @@ class Help(commands.Cog):
 
                     command_found = True
 
-                    embed.title = f"Help for '{command.name}'"
+                    embed = discord.Embed(colour=self.bot.embed_colour)
 
-                    embed.description = f"*{command.help}*" if command.help else "No description available."
+                    embed.title = f"Help for the **{command.name}** command"
 
-                    prefix = json_helper.get_prefix(ctx.guild.id, self.bot)
+                    # if no help text is defined for the command the description text will be taken instead
+                    description = f"*{command.help}*" if command.help else command.description
+                    embed.description = description if description else "No description available."
 
-                    aliases = f"`{prefix}{command.name}`\n"
+                    aliases = f"`{ctx.prefix}{command.name}`\n"
 
                     if len(command.aliases) > 0:
                         for alias in command.aliases:
-                            aliases += f"`{prefix}{alias}`\n"
+                            aliases += f"`{ctx.prefix}{alias}`\n"
 
-                    embed.add_field(name="Aliases", value=aliases, inline=False)
+                    embed.add_field(name="Aliases", value=aliases, inline=True)
+
+                    if command.clean_params:
+                        parameters = list(command.clean_params)
+                        parameter_string = ""
+                        for parameter in parameters:
+                            parameter_string += f"<{str(parameter)}> -"
+                        embed.add_field(name="Parameter", value=parameter_string, inline=False)
+
+
+                    # sending the help message
+                    await ctx.send(embed=embed)
+
             if not command_found:
-                ctx.send("fd")
+                raise discord.ext.commands.BadArgument("Invalid command passed for the help command")
+            else:
+                return
 
-        # invalid cog argument
-        # the help page does not exist
-        else:
-            await ctx.send(f"Invalid argument: `{cog}`. Use the `{json_helper.get_prefix(ctx.guild.id, self.bot)}"
-                           f"help` command for more info")
-            return
-
-        # sending the help embed to the ctx channel
-        await ctx.send(embed=embed)
+        await ctx.send(f"**An unexpected error occurred!** Please contact {self.bot.author_mention} "
+                       f"with the following error code: `helpCommand.py exception`.")
 
 
 def setup(bot):

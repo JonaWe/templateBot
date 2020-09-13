@@ -12,13 +12,17 @@ class CommandErrorEvent(commands.Cog):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.UserInputError):
+    async def on_command_error(self, ctx: discord.ext.commands.context.Context, error):
+        if isinstance(error, commands.TooManyArguments):
             await ctx.send(
-                f"You have used this command incorrectly!\nUse `{json_helper.get_prefix(ctx.guild.id, self.bot)}"
-                f"help <command>` for more info about this command.")
+                f"Too many arguments for `{ctx.command}`! Use `{ctx.prefix}"
+                f"help {ctx.command}` for more info about this command.")
+        elif isinstance(error, commands.UserInputError):
+            await ctx.send(
+                f"You have used this command incorrectly! Use `{ctx.prefix}"
+                f"help {ctx.command}` for more info about this command.")
         elif isinstance(error, commands.CommandNotFound):
-            await ctx.send(f"This command does not exist!\nUse `{json_helper.get_prefix(ctx.guild.id, self.bot)}"
+            await ctx.send(f"This command does not exist!\nUse `{ctx.prefix}"
                            f"help` for a list of the available commends.")
         elif isinstance(error, commands.CommandOnCooldown):
             m, s = divmod(error.retry_after, 60)

@@ -11,11 +11,11 @@ class AdminCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    @commands.command()
+    @commands.command(description="Blacklists users form the bot")
     @commands.is_owner()
     async def blacklist(self, ctx, user: discord.Member):
         """
-        Blacklist users from bot commands.
+        Blacklists users from thr bot. The blacklisted users cannot use any commands from this bot.
         """
         self.bot.blacklisted_users.append(user.id)
 
@@ -25,7 +25,7 @@ class AdminCommands(commands.Cog):
 
         await ctx.send(f"{user.display_name} has been added to the blacklist.")
 
-    @commands.command()
+    @commands.command(description="Removes users from the blacklist for this bot")
     @commands.is_owner()
     async def unblacklist(self, ctx, user: discord.Member):
         """
@@ -39,12 +39,12 @@ class AdminCommands(commands.Cog):
 
         await ctx.send(f"{user.display_name} has been removed from the blacklist.")
 
-    @commands.command()
+    @commands.command(description="Changes the bot prefix")
     @commands.has_guild_permissions(administrator=True)
     @commands.cooldown(1, 5, commands.BucketType.guild)
     async def prefix(self, ctx, *, prefix='-'):
         """
-        Sets a custom prefix for this bot.
+        Changes the bot prefix for this server. The prefix is used for all commands for this bot.
         """
         data = json_helper.read_json("prefixes")
         data[str(ctx.message.guild.id)] = prefix
