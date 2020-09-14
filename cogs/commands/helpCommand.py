@@ -35,6 +35,11 @@ class Help(commands.Cog):
             if file.endswith(".py"):
                 cogs.remove(str(file[:-3]))
 
+        # removes all the task cogs from cogs list
+        for file in os.listdir(f"{self.bot.cwd}/cogs/tasks"):
+            if file.endswith(".py"):
+                cogs.remove(str(file[:-3]))
+
         # check if the cog argument is a number
         # -> opening a specific help page
         if not command:
