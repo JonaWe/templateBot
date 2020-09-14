@@ -21,6 +21,7 @@ class DataUpdateTask(commands.Cog):
         self.bot.total_server = len(self.bot.guilds)
         self.bot.total_user = len(set(self.bot.get_all_members()))
 
+        # todo data dump lock
         data = json_helper.read_json("stats")
         data["executed_commands"] = self.bot.total_executed_commands
         json_helper.write_json("stats", data)

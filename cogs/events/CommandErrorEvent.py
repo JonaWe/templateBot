@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json_helper
+from humanfriendly import format_timespan
 
 
 class CommandErrorEvent(commands.Cog):
@@ -35,80 +36,7 @@ class CommandErrorEvent(commands.Cog):
                                 value=f"Use `{ctx.prefix}help` for a list of all the commands.")
                 await ctx.send(embed=embed)
             elif is_error_type(commands.CommandOnCooldown):
-                m, s = divmod(error.retry_after, 60)
-                h, m = divmod(m, 60)
-                d, h = divmod(h, 24)
-
-                day = None
-                hour = None
-                minute = None
-                second = None
-
-                if int(d) is 1:
-                    day = f"{int(h)} day"
-                elif int(d) >= 2:
-                    day = f"{int(h)} days"
-
-                if int(h) is 1:
-                    hour = f"{int(h)} hour"
-                elif int(h) >= 2:
-                    hour = f"{int(h)} hours"
-
-                if int(m) is 1:
-                    minute = f"{int(m)} minute"
-                elif int(m) >= 2:
-                    minute = f"{int(m)} minutes"
-
-                if int(s) is 1:
-                    second = f"{int(s)} second"
-                elif int(s) >= 2:
-                    second = f"{int(s)} seconds"
-
-                wait_msg = ""
-
-                if day:
-                    if hour:
-                        if minute:
-                            if second:
-                                wait_msg = f"{day}, {hour}, {minute} and {second}"
-                            else:
-                                wait_msg = f"{day}, {hour} and {minute}"
-                        else:
-                            if second:
-                                wait_msg = f"{day}, {hour} and {second}"
-                            else:
-                                wait_msg = f"{day} and {hour}"
-                    else:
-                        if minute:
-                            if second:
-                                wait_msg = f"{day}, {minute} and {second}"
-                            else:
-                                wait_msg = f"{day} and {minute}"
-                        else:
-                            if second:
-                                wait_msg = f"{day} and {second}"
-                            else:
-                                wait_msg = f"{day}"
-                else:
-                    if hour:
-                        if minute:
-                            if second:
-                                wait_msg = f"{hour}, {minute} and {second}"
-                            else:
-                                wait_msg = f"{hour} and {minute}"
-                        else:
-                            if second:
-                                wait_msg = f"{hour} and {second}"
-                            else:
-                                wait_msg = f"{hour}"
-                    else:
-                        if minute:
-                            if second:
-                                wait_msg = f"{minute} and {second}"
-                            else:
-                                wait_msg = f"{minute}"
-                        else:
-                            wait_msg = f"{second}"
+                wait_msg = format_timespan(error.retry_after, max_units=4)
 
                 cooldown_type = error.cooldown.type
 
