@@ -71,7 +71,7 @@ async def update_task():
         data["executed_commands"] = bot.total_executed_commands
         json_helper.write_json("stats", data)
 
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)
 
 
 @bot.event

@@ -1,3 +1,4 @@
+import aiohttp
 import discord
 from discord.ext import commands
 import random
@@ -59,7 +60,7 @@ class UserCommands(commands.Cog):
                       aliases=['t'])
     @commands.cooldown(1, 1*60*60*24, commands.BucketType.user)
     async def born(self, ctx: discord.ext.commands.context.Context):
-        await ctx.send("hey")
+        await ctx.send("yooooo")
 
 def setup(bot):
     bot.add_cog(UserCommands(bot))
