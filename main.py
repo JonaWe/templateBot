@@ -86,19 +86,12 @@ async def status_task():
 if __name__ == '__main__':
     token = json_helper.read_json("token")["token"]
 
-    # loading event cogs
-    for file in os.listdir(f"{bot.cwd}/cogs/events"):
-        if file.endswith(".py"):
-            bot.load_extension(f"cogs.events.{file[:-3]}")
+    # loading the event, command and task cogs
+    cog_types = ["events", "commands", "tasks"]
+    for cog_type in cog_types:
+        for file in os.listdir(f"{bot.cwd}/cogs/{cog_type}"):
+            if file.endswith(".py"):
+                bot.load_extension(f"cogs.{cog_type}.{file[:-3]}")
 
-    # loading command cogs
-    for file in os.listdir(f"{bot.cwd}/cogs/commands"):
-        if file.endswith(".py"):
-            bot.load_extension(f"cogs.commands.{file[:-3]}")
-
-    # loading command tasks
-    for file in os.listdir(f"{bot.cwd}/cogs/tasks"):
-        if file.endswith(".py"):
-            bot.load_extension(f"cogs.tasks.{file[:-3]}")
 
     bot.run(token)
