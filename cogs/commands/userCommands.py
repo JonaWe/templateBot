@@ -41,7 +41,7 @@ class UserCommands(commands.Cog):
             if number[0].isnumeric():
                 max_value = int(number[0])
             else:
-                await ctx.send("Enter a fucking number u stupid shit")
+                raise discord.ext.commands.BadArgument("Number expected")
         else:
             max_value = 6
         await embed_helper.send_roll_dice_embed(ctx.author, ctx, self.bot, max_value)
