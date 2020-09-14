@@ -55,10 +55,10 @@ async def on_ready():
 
     print(f"---------\nlogged in as {bot.user}\n---------")
 
-    await update_task()
+    #await update_task()
 
-    bot.loop.create_task(update_task())
-    bot.loop.create_task(status_task())
+    #bot.loop.create_task(update_task())
+    #bot.loop.create_task(status_task())
 
 
 @bot.event
@@ -95,5 +95,10 @@ if __name__ == '__main__':
     for file in os.listdir(f"{bot.cwd}/cogs/commands"):
         if file.endswith(".py"):
             bot.load_extension(f"cogs.commands.{file[:-3]}")
+
+    # loading command tasks
+    for file in os.listdir(f"{bot.cwd}/cogs/tasks"):
+        if file.endswith(".py"):
+            bot.load_extension(f"cogs.tasks.{file[:-3]}")
 
     bot.run(token)
