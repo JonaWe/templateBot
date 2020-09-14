@@ -30,15 +30,12 @@ class Help(commands.Cog):
         # list of all cogs
         cogs = [c for c in self.bot.cogs.keys()]
 
-        # removes all the event cogs from cogs list
-        for file in os.listdir(f"{self.bot.cwd}/cogs/events"):
-            if file.endswith(".py"):
-                cogs.remove(str(file[:-3]))
-
-        # removes all the task cogs from cogs list
-        for file in os.listdir(f"{self.bot.cwd}/cogs/tasks"):
-            if file.endswith(".py"):
-                cogs.remove(str(file[:-3]))
+        # removes all the cogs with no commands
+        remove_cogs = ["events", "tasks"]
+        for remove_cog in remove_cogs:
+            for file in os.listdir(f"{self.bot.cwd}/cogs/{remove_cog}"):
+                if file.endswith(".py"):
+                    cogs.remove(str(file[:-3]))
 
         # check if the cog argument is a number
         # -> opening a specific help page
