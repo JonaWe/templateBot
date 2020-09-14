@@ -55,33 +55,6 @@ async def on_ready():
 
     print(f"---------\nlogged in as {bot.user}\n---------")
 
-    # await update_task()
-
-    # bot.loop.create_task(update_task())
-    # bot.loop.create_task(status_task())
-
-
-@bot.event
-async def update_task():
-    while True:
-        bot.total_server = len(bot.guilds)
-        bot.total_user = len(set(bot.get_all_members()))
-
-        data = json_helper.read_json("stats")
-        data["executed_commands"] = bot.total_executed_commands
-        json_helper.write_json("stats", data)
-
-        await asyncio.sleep(1)
-
-
-@bot.event
-async def status_task():
-    while True:
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                            name=f"{bot.total_server} servers | {bot.DEFAULTPREFIX}help to start!"),
-                                  status=discord.Status.online)
-        await asyncio.sleep(60)
-
 
 if __name__ == '__main__':
     token = json_helper.read_json("token")["token"]
