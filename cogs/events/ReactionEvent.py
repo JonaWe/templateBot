@@ -36,8 +36,10 @@ class ReactionEvent(commands.Cog):
             return
         elif reaction.emoji == self.bot.emoji["repeat"]:
             if message.embeds[0].title == "Flipping the coin!":
+                self.bot.total_executed_commands += 1
                 await embed_helper.send_coin_flip_embed(user, reaction.message.channel, self.bot)
             elif message.embeds[0].title == "Rolling the dice!":
+                self.bot.total_executed_commands += 1
                 await embed_helper.send_roll_dice_embed(user, reaction.message.channel, self.bot, 6)
 
 
