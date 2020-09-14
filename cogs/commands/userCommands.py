@@ -16,7 +16,7 @@ class UserCommands(commands.Cog):
     @commands.command(aliases=['flip', 'coinflip', 'cf'],
                       ignore_extra=False,
                       description="Flips a coin")
-    async def coin(self, ctx):
+    async def coin(self, ctx: discord.ext.commands.context.Context):
         """
         Flips a coin with the result heads or tails
         """
@@ -25,7 +25,7 @@ class UserCommands(commands.Cog):
     @commands.command(aliases=['botinfo', 'info'],
                       description="Displays information about this bot")
     # @commands.cooldown(1, 1000, commands.BucketType.user)
-    async def stats(self, ctx):
+    async def stats(self, ctx: discord.ext.commands.context.Context):
         """
         This command displays some stats and information about this bot.
         """
@@ -33,7 +33,7 @@ class UserCommands(commands.Cog):
 
     @commands.command(aliases=['roll dice', 'roll', 'rtd'],
                       description="Rolls a dice")
-    async def dice(self, ctx, *number):
+    async def dice(self, ctx: discord.ext.commands.context.Context, *number):
         """
         Rolls a dice from 1-6. If you add a number after the command you can set the dice range.
         """
@@ -49,7 +49,7 @@ class UserCommands(commands.Cog):
     @commands.command(description="Wipes messages in a channel")
     @commands.guild_only()
     @commands.has_guild_permissions(manage_messages=True)
-    async def wipe(self, ctx, amount=10):
+    async def wipe(self, ctx: discord.ext.commands.context.Context, amount=10):
         """
         Wipes the given amount of messages in the channel where the command is executed in. Default amount of wiped messages is 10.
         """
@@ -58,7 +58,7 @@ class UserCommands(commands.Cog):
     @commands.command(name='test',
                       aliases=['t'])
     @commands.cooldown(1, 1*60*60*24, commands.BucketType.user)
-    async def born(self, ctx):
+    async def born(self, ctx: discord.ext.commands.context.Context):
         await ctx.send("hey")
 
 def setup(bot):

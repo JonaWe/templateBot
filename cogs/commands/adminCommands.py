@@ -13,7 +13,7 @@ class AdminCommands(commands.Cog):
 
     @commands.command(description="Blacklists users form the bot")
     @commands.is_owner()
-    async def blacklist(self, ctx, user: discord.Member):
+    async def blacklist(self, ctx: discord.ext.commands.context.Context, user: discord.Member):
         """
         Blacklists users from thr bot. The blacklisted users cannot use any commands from this bot.
         """
@@ -27,7 +27,7 @@ class AdminCommands(commands.Cog):
 
     @commands.command(description="Removes users from the blacklist for this bot")
     @commands.is_owner()
-    async def unblacklist(self, ctx, user: discord.Member):
+    async def unblacklist(self, ctx: discord.ext.commands.context.Context, user: discord.Member):
         """
         Removes users from blacklist for bot commands.
         """
@@ -42,7 +42,7 @@ class AdminCommands(commands.Cog):
     @commands.command(description="Changes the bot prefix")
     @commands.has_guild_permissions(administrator=True)
     @commands.cooldown(1, 5, commands.BucketType.guild)
-    async def prefix(self, ctx, *, prefix='-'):
+    async def prefix(self, ctx: discord.ext.commands.context.Context, *, prefix='-'):
         """
         Changes the bot prefix for this server. The prefix is used for all commands for this bot.
         """

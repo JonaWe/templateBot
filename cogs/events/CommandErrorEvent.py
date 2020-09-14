@@ -14,20 +14,26 @@ class CommandErrorEvent(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.ext.commands.context.Context, error):
         is_error_type = lambda e: isinstance(error, e)
-
+        embed = discord.Embed(colour=discord.Colour(0x800000))
+        embed.title = "There seemed to be an error while processing your command!"
+        # There seemed to be an error while processing your command!
+        # embed red and description
         if is_error_type(commands.CommandError):
             if is_error_type(commands.UserInputError):
                 if is_error_type(commands.TooManyArguments):
-                    await ctx.send(
-                        f"Too many arguments for `{ctx.command}`! Use `{ctx.prefix}"
-                        f"help {ctx.command}` for more info about this command.")
+                    embed.description = f"**Error:**```Too many arguments for this command!```"
+                    embed.add_field(name="\uFEFF", value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                    await ctx.send(embed=embed)
                 else:
-                    await ctx.send(
-                        f"You have used this command incorrectly! Use `{ctx.prefix}"
-                        f"help {ctx.command}` for more info about this command.")
+                    embed.description = f"**Error:**```You have used this command incorrectly!```"
+                    embed.add_field(name="\uFEFF",
+                                    value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                    await ctx.send(embed=embed)
             elif is_error_type(commands.CommandNotFound):
-                await ctx.send(f"This command does not exist!\nUse `{ctx.prefix}"
-                               f"help` for a list of the available commends.")
+                embed.description = f"**Error:**```This command does not exist!```"
+                embed.add_field(name="\uFEFF",
+                                value=f"Use `{ctx.prefix}help` for a list of all the commands.")
+                await ctx.send(embed=embed)
             elif is_error_type(commands.CommandOnCooldown):
                 m, s = divmod(error.retry_after, 60)
                 h, m = divmod(m, 60)
@@ -104,16 +110,42 @@ class CommandErrorEvent(commands.Cog):
                         else:
                             wait_msg = f"{second}"
 
-                await ctx.send(f"You must wait {wait_msg} to use this command again!")
+                cooldown_type = error.cooldown.type
+
+                if cooldown_type == discord.ext.commands.BucketType.guild:
+                    embed.description = f"**Error:**```This command is on cooldown for this server!```" \
+                                        f"\nYou must wait **{wait_msg}** to use `{ctx.prefix}{ctx.command}` again!"
+                elif cooldown_type == discord.ext.commands.BucketType.channel:
+                    embed.description = f"**Error:**```This command is on cooldown for this channel!```" \
+                                        f"\nYou must wait **{wait_msg}** to use `{ctx.prefix}{ctx.command}` again!"
+                else:
+                    embed.description = f"**Error:**```This command is on cooldown for you!```" \
+                                        f"\nYou must wait **{wait_msg}** to use `{ctx.prefix}{ctx.command}` again!"
+
+                embed.add_field(name="\uFEFF", value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                await ctx.send(embed=embed)
             elif is_error_type(commands.CheckFailure):
                 if is_error_type(commands.NoPrivateMessage):
-                    await ctx.send("No Private Message")
+                    embed.description = f"**Error:**```This command does not work in DM messages!```"
+                    embed.add_field(name="\uFEFF", value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                    await ctx.send(embed=embed)
                 elif is_error_type(commands.NSFWChannelRequired):
-                    await ctx.send("NSFW channel required")
+                    embed.description = f"**Error:**```This command must be executed in a NSFW channel!```"
+                    embed.add_field(name="\uFEFF",
+                                    value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                    await ctx.send(embed=embed)
                 elif is_error_type(commands.MissingPermissions):
-                    await ctx.send("You lack permissions to use this command")
+                    # todo list permissions
+                    embed.description = f"**Error:**```You dont have permissions to use this command!```"
+                    embed.add_field(name="\uFEFF",
+                                    value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                    await ctx.send(embed=embed)
                 elif is_error_type(commands.BotMissingPermissions):
-                    await ctx.send("I dont have the required permissions to execute this command")
+                    # todo list permissions
+                    embed.description = f"**Error:**```I dont have the required permissions to execute this command!```"
+                    embed.add_field(name="\uFEFF",
+                                    value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                    await ctx.send(embed=embed)
 
         raise error
 

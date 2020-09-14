@@ -101,7 +101,7 @@ class Help(commands.Cog):
                         parameters = list(command.clean_params)
                         parameter_string = ""
                         for parameter in parameters:
-                            parameter_string += f"<{str(parameter)}> -"
+                            parameter_string += f"<{str(parameter)}> "
                         embed.add_field(name="Parameter", value=parameter_string, inline=False)
 
 

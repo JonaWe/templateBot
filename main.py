@@ -10,6 +10,7 @@ import json_helper
 # todo watchtogether
 # todo skribble
 # todo vier gewinnt
+# todo translate
 
 
 # logging setup
@@ -36,6 +37,8 @@ bot.version = 1.0
 bot.author_mention = "<@306139277195083776>"
 bot.blacklisted_users = []
 
+bot.total_executed_commands = json_helper.read_json("stats")["executed_commands"]
+
 bot.total_user = -1
 bot.total_server = -1
 
@@ -60,9 +63,15 @@ async def on_ready():
 
 @bot.event
 async def update_task():
-    bot.total_server = len(bot.guilds)
-    bot.total_user = len(set(bot.get_all_members()))
-    await asyncio.sleep(60)
+    while True:
+        bot.total_server = len(bot.guilds)
+        bot.total_user = len(set(bot.get_all_members()))
+
+        data = json_helper.read_json("stats")
+        data["executed_commands"] = bot.total_executed_commands
+        json_helper.write_json("stats", data)
+
+        await asyncio.sleep(2)
 
 
 @bot.event
