@@ -102,13 +102,16 @@ class Help(commands.Cog):
                 embed.add_field(name="Aliases", value=aliases, inline=False)
 
             # adding subcommand field
-            sub_commands = []
-            for sc in command.walk_commands():
-                if command.hidden:
-                    continue
-                sub_commands.append(f"`{sc.name}`")
-            if len(sub_commands) > 0:
-                embed.add_field(name="Subcommands", value="\n".join(sub_commands))
+            if isinstance(command, discord.ext.commands.Group):
+                sub_commands = []
+                for sc in command.walk_commands():
+                    if sc.hidden:
+                        continue
+                    if sc.parent is not command:
+                        continue
+                    sub_commands.append(f"`{sc.name}`")
+                if len(sub_commands) > 0:
+                    embed.add_field(name="Subcommands", value="\n".join(sub_commands))
 
             # adding cooldown field if a cooldown is active for the command
             if command._buckets._cooldown:
