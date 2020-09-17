@@ -12,7 +12,6 @@ class CommandEvent(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
-        print(self.bot.total_executed_commands)
         self.bot.total_executed_commands += 1
 
 
