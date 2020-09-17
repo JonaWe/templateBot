@@ -19,7 +19,7 @@ class MyBot(commands.Bot):
     emoji = {"repeat": "\U0001F501"}
     DEFAULTPREFIX = '-'
 
-    def get_my_prefix(self, bot, ctx):
+    async def get_my_prefix(self, bot, ctx):
         if ctx.guild:
             async with asyncio.Lock():
                 prefix = json_helper.get_prefix(ctx.guild.id, bot)
