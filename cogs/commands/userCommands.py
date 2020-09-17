@@ -2,6 +2,7 @@ import aiohttp
 import discord
 from discord.ext import commands
 import random
+from platform import python_version
 
 import embed_helper
 
@@ -30,7 +31,22 @@ class UserCommands(commands.Cog):
         """
         This command displays some stats and information about this bot.
         """
-        await embed_helper.send_stats_embed(ctx, self.bot)
+        embed = discord.Embed(colour=self.bot.embed_colour, title=f"{self.bot.user.name} Stats", description="\uFEFF")
+
+        embed.timestamp = ctx.message.created_at
+        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
+
+        embed.add_field(name="Total Servers", value=str(self.bot.total_server))
+        embed.add_field(name="Total Users", value=str(self.bot.total_user))
+        embed.add_field(name="Total Executed Commands", value=str(self.bot.total_executed_commands))
+        embed.add_field(name="Bot Version", value=str(self.bot.version))
+        embed.add_field(name="Running on", value=f"Python {python_version()}")
+        embed.add_field(name="Discord.py Version", value=f"{discord.__version__}")
+        embed.add_field(name="Developer", value=self.bot.author_mention)
+
+        embed.set_footer(text=f"{self.bot.user.name}")
+
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=['roll dice', 'roll', 'rtd'],
                       description="Rolls a dice")
