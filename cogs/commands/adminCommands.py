@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json_helper
+import customErrors.errors
 
 
 class AdminCommands(commands.Cog):
@@ -18,7 +19,7 @@ class AdminCommands(commands.Cog):
         Interaction with the blacklist of this bot.
         """
         if ctx.invoked_subcommand is None:
-            await ctx.send("Invalid subcommand!!!")
+            raise customErrors.errors.SubCommandRequired
 
     @blacklist.command(description="Blacklists users form the bot",
                        aliases=["a"])
@@ -58,7 +59,9 @@ class AdminCommands(commands.Cog):
         data = json_helper.read_json("prefixes")
         data[str(ctx.message.guild.id)] = prefix
         json_helper.write_json("prefixes", data)
-        await ctx.send(f"The server prefix has been set to `{prefix}`. To change it again use `{prefix}prefix <prefix>`!")
+        await ctx.send(
+            f"The server prefix has been set to `{prefix}`. To change it again use `{prefix}prefix <prefix>`!")
+
 
 def setup(bot):
     bot.add_cog(AdminCommands(bot))

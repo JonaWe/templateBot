@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import json_helper
+import customErrors.errors
 from humanfriendly import format_timespan
 
 
@@ -71,6 +71,11 @@ class CommandErrorEvent(commands.Cog):
                         embed.add_field(name="\uFEFF",
                                         value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                         await ctx.send(embed=embed)
+                    elif is_error_type(customErrors.errors.SubCommandRequired):
+                        embed.description = f"**Error:**```A subcommand is required in order to run this command!```"
+                        embed.add_field(name="\uFEFF",
+                                        value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                        await ctx.send(embed=embed)
                     else:
                         embed.description = f"**Error:**```Invalid argument for this command!```"
                         embed.add_field(name="\uFEFF",
@@ -127,6 +132,7 @@ class CommandErrorEvent(commands.Cog):
                     embed.add_field(name="\uFEFF",
                                     value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                     await ctx.send(embed=embed)
+
 
         raise error
 
