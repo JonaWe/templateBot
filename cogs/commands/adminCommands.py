@@ -41,6 +41,10 @@ class AdminCommands(commands.Cog):
         """
         Removes users from blacklist for bot commands.
         """
+        if user.id not in self.bot.blacklisted_users:
+            await ctx.send(f"{user.display_name} was not found in the blacklist and therefore could not be removed from it.")
+            return
+        
         self.bot.blacklisted_users.remove(user.id)
 
         data = json_helper.read_json("blacklist")

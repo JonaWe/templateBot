@@ -6,11 +6,11 @@ from MyBot import MyBot
 # todo skribble
 # todo vier gewinnt
 # todo translate
-# todo update api python -m pip install -U git+https://github.com/Rapptz/discord.py@master#egg=discord.py[voice]
+# todo pip install -U git+https://github.com/Rapptz/discord.py@master#egg=discord.py[voice]
 
 
 # logging setup
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
