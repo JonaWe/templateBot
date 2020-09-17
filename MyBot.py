@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 import os
@@ -19,7 +21,8 @@ class MyBot(commands.Bot):
 
     def get_my_prefix(self, bot, ctx):
         if ctx.guild:
-            prefix = json_helper.get_prefix(ctx.guild.id, bot)
+            async with asyncio.Lock():
+                prefix = json_helper.get_prefix(ctx.guild.id, bot)
         else:
             prefix = self.DEFAULTPREFIX
         return prefix
