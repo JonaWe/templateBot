@@ -11,16 +11,20 @@ class AdminCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    @commands.group()
+    @commands.group(description="Manage the blacklist")
     @commands.is_owner()
     async def blacklist(self, ctx: discord.ext.commands.context.Context):
+        """
+        Interaction with the blacklist of this bot.
+        """
         if ctx.invoked_subcommand is None:
             await ctx.send("Invalid subcommand!!!")
 
-    @blacklist.command(description="Blacklists users form the bot")
+    @blacklist.command(description="Blacklists users form the bot",
+                       aliases=["a"])
     async def add(self, ctx: discord.ext.commands.context.Context, user: discord.Member):
         """
-        Blacklists users from thr bot. The blacklisted users cannot use any commands from this bot.
+        Blacklists users from the bot. The blacklisted users cannot use any commands from this bot.
         """
         self.bot.blacklisted_users.append(user.id)
 
@@ -30,7 +34,8 @@ class AdminCommands(commands.Cog):
 
         await ctx.send(f"{user.display_name} has been added to the blacklist.")
 
-    @blacklist.command(description="Removes users from the blacklist for this bot")
+    @blacklist.command(description="Removes users from the blacklist for this bot",
+                       aliases=["r"])
     async def remove(self, ctx: discord.ext.commands.context.Context, user: discord.Member):
         """
         Removes users from blacklist for bot commands.
