@@ -5,6 +5,7 @@ import re
 import math
 from discord.ext import commands
 import json_helper
+from humanfriendly import format_timespan
 
 
 class Help(commands.Cog):
@@ -91,21 +92,36 @@ class Help(commands.Cog):
                     description = f"*{command.help}*" if command.help else command.description
                     embed.description = description if description else "No description available."
 
-                    aliases = f"`{ctx.prefix}{command.name}`\n"
-
-                    if len(command.aliases) > 0:
-                        for alias in command.aliases:
-                            aliases += f"`{ctx.prefix}{alias}`\n"
-
-                    embed.add_field(name="Aliases", value=aliases, inline=True)
-
+                    # adding command usage example to the description
+                    embed.description += f"\n```{ctx.prefix}{command.name}"
                     if command.clean_params:
                         parameters = list(command.clean_params)
-                        parameter_string = ""
                         for parameter in parameters:
-                            parameter_string += f"<{str(parameter)}> "
-                        embed.add_field(name="Parameter", value=parameter_string, inline=False)
+                            embed.description += f" <{str(parameter)}>"
+                    embed.description += "```"
 
+                    # adding aliases field if aliases exist for this command
+                    if len(command.aliases) > 0:
+                        aliases = ""
+                        for alias in command.aliases:
+                            aliases += f"`{ctx.prefix}{alias}`\n"
+                        embed.add_field(name="Aliases", value=aliases, inline=False)
+
+                    # adding cooldown field if a cooldown is active for the command
+                    if command._buckets._cooldown:
+                        rate_string = f"{command._buckets._cooldown.rate} times" if command._buckets._cooldown.rate > 1 else f"{command._buckets._cooldown.rate} time"
+                        per_string = format_timespan(command._buckets._cooldown.per, max_units=3)
+
+                        types = {discord.ext.commands.BucketType.user: "user",
+                                 discord.ext.commands.BucketType.guild: "server",
+                                 discord.ext.commands.BucketType.channel: "channel",
+                                 discord.ext.commands.BucketType.member: "member",
+                                 discord.ext.commands.BucketType.role: "role",
+                                 discord.ext.commands.BucketType.category: "category",
+                                 discord.ext.commands.BucketType.default: "default",
+                                 }
+                        msg_content = f"This command can be used **{rate_string}** every **{per_string}** per **{types.get(command._buckets._cooldown.type, '<unknown>')}**."
+                        embed.add_field(name="**Cooldown**", value=msg_content)
 
                     # sending the help message
                     await ctx.send(embed=embed)

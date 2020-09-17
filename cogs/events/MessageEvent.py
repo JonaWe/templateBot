@@ -37,8 +37,8 @@ class MessageEvent(commands.Cog):
         # await self.bot.process_commands(message)
 
         #todo check for private channel
-        #prefix = json_helper.get_prefix(message.guild.id, self.bot)
-        prefix = '-'
+        prefix = json_helper.get_prefix(message.guild.id, self.bot)
+        #prefix = '-'
         # checking if a message should be deleted
         if message.content.startswith(f"{prefix}coinflip") \
                 or message.content.startswith(f"{prefix}flip") \

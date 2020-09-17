@@ -58,9 +58,10 @@ class UserCommands(commands.Cog):
 
     @commands.command(name='test',
                       aliases=['t'])
-    @commands.cooldown(1, 95040, commands.BucketType.user)
+    @commands.cooldown(1, 75, commands.BucketType.user)
     async def born(self, ctx: discord.ext.commands.context.Context):
         await ctx.send("yooooo")
+
 
 def setup(bot):
     bot.add_cog(UserCommands(bot))

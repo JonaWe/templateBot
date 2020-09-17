@@ -11,6 +11,7 @@ import json_helper
 # todo skribble
 # todo vier gewinnt
 # todo translate
+# todo update api python -m pip install -U git+https://github.com/Rapptz/discord.py@master#egg=discord.py[voice]
 
 
 # logging setup
