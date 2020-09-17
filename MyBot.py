@@ -17,10 +17,12 @@ class MyBot(commands.Bot):
     emoji = {"repeat": "\U0001F501"}
     DEFAULTPREFIX = '-'
 
-    @staticmethod
-    def get_my_prefix(bot1, ctx):
-        prefix = json_helper.get_prefix(ctx.guild.id, bot1)
-        return commands.when_mentioned_or(prefix)(bot1, ctx)
+    def get_my_prefix(self, bot, ctx):
+        if ctx.guild:
+            prefix = json_helper.get_prefix(ctx.guild.id, bot)
+        else:
+            prefix = self.DEFAULTPREFIX
+        return prefix
 
     def __init__(self):
         super().__init__(command_prefix=self.get_my_prefix, owner_id=306139277195083776, help_command=None,
