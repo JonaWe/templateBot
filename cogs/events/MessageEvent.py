@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 
-import json_helper
-
 
 class MessageEvent(commands.Cog):
     def __init__(self, bot):
@@ -14,28 +12,8 @@ class MessageEvent(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        # message from the bot
-        if message.author == self.bot.user:
+        if not await self.bot.check_message_reply(message):
             return
-
-        # dm message to the bot
-        if isinstance(message.channel, discord.DMChannel):
-            pass
-            # return
-
-        # message is not in bot-commands channel
-        # todo check if the channel is a private channel
-        #if message.channel.name != "bot-commands":
-        #    pass
-            # return
-
-        # author is blacklisted
-        if message.author.id in self.bot.blacklisted_users:
-            return
-
-        # processing the commands
-        # await self.bot.process_commands(message)
-
 
         prefix = self.bot.get_my_prefix(self.bot, message)
 
@@ -52,9 +30,7 @@ class MessageEvent(commands.Cog):
 
         # if the bot gets mentioned it replies
         if f"<@!{self.bot.user.id}>" in message.content:
-            await message.channel.send(f"I have heard my name.\nIf you need my help use "
-                                       f"`{prefix}help`"
-                                       f" to get a list of the available commands.")
+            await message.channel.send(f"I If you need my help use `{prefix}help` to get a list of the available commands.")
 
 
 def setup(bot):

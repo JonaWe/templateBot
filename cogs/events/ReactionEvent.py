@@ -16,7 +16,6 @@ class ReactionEvent(commands.Cog):
     async def on_reaction_add(self, reaction: discord.Reaction, user):
         # reaction from the bot itself
         if user == self.bot.user:
-            print("---\nreaction from myself\n---")
             return
 
         message = reaction.message

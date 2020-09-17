@@ -50,3 +50,29 @@ class MyBot(commands.Bot):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"---------\nlogged in as <{self.user}>\n---------")
+
+    async def check_message_reply(self, message):
+        # ignore messages from the bot itself
+        if message.author == self.user:
+            return False
+
+        # ignore commands that are not in bot-commands channel
+        if isinstance(message.channel, discord.TextChannel) and message.channel.name != "bot-commands":
+            return False
+
+        # ignore dm messages
+        if isinstance(message.channel, discord.DMChannel):
+            pass
+
+        # ignore messages form blacklisted users
+        if message.author.id in self.blacklisted_users:
+            return False
+
+        return True
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if not await self.check_message_reply(message):
+            return
+
+        await self.process_commands(message)
