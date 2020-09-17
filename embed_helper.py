@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import random
-from platform import python_version
 
 
 async def send_coin_flip_embed(user: discord.User, channel, bot: commands.Bot):

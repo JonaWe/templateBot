@@ -1,10 +1,7 @@
 import os
 
 import discord
-import re
-import math
 from discord.ext import commands
-import json_helper
 from humanfriendly import format_timespan
 
 

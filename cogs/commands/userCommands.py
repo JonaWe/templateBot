@@ -1,7 +1,5 @@
-import aiohttp
 import discord
 from discord.ext import commands
-import random
 from platform import python_version
 
 import embed_helper
