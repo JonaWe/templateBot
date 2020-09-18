@@ -71,6 +71,7 @@ class UserCommands(commands.Cog):
         await ctx.channel.purge(limit=amount + 1)
 
     @commands.command(name='test',
+                      ignore_extra=False,
                       aliases=['t'])
     @commands.cooldown(1, 75, commands.BucketType.user)
     @commands.bot_has_guild_permissions(administrator=True, kick_members=True, ban_members=True, manage_roles=True)

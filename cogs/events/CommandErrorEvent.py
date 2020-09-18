@@ -101,10 +101,10 @@ class CommandErrorEvent(commands.Cog):
                     embed.description = f"**Error:**```fix\nThis command is on cooldown for this server!```" \
                                         f"\nYou must wait **{wait_msg}** to use `{ctx.prefix}{ctx.command}` again!"
                 elif cooldown_type == discord.ext.commands.BucketType.channel:
-                    embed.description = f"**Error:**```This command is on cooldown for this channel!```" \
+                    embed.description = f"**Error:**```fix\nThis command is on cooldown for this channel!```" \
                                         f"\nYou must wait **{wait_msg}** to use `{ctx.prefix}{ctx.command}` again!"
                 else:
-                    embed.description = f"**Error:**```This command is on cooldown for you!```" \
+                    embed.description = f"**Error:**```fix\nThis command is on cooldown for you!```" \
                                         f"\nYou must wait **{wait_msg}** to use `{ctx.prefix}{ctx.command}` again!"
 
                 embed.add_field(name="\uFEFF",
