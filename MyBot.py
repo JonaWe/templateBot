@@ -12,6 +12,7 @@ class MyBot(commands.Bot):
     author_mention = "<@306139277195083776>"
     blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
     total_executed_commands = json_helper.read_json("stats")["executed_commands"]
+    invite_link = "https://discord.com/api/oauth2/authorize?client_id=752564236076580994&permissions=8&scope=bot"
     total_user = -1
     total_server = -1
     cwd = str(Path(__file__).parent)
@@ -29,16 +30,6 @@ class MyBot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=self.get_my_prefix, owner_id=306139277195083776, help_command=None,
                          case_insensitive=True)
-        self.version = 1.0
-        self.author_mention = "<@306139277195083776>"
-        self.blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
-        self.total_executed_commands = json_helper.read_json("stats")["executed_commands"]
-        self.total_user = -1
-        self.total_server = -1
-        self.cwd = str(Path(__file__).parent)
-        self.embed_colour = discord.Colour.gold()
-        self.emoji = {"repeat": "\U0001F501"}
-        self.DEFAULTPREFIX = '-'
 
     def run(self, t):
         cog_types = ["events", "commands", "tasks"]

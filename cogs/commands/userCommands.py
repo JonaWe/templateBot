@@ -70,6 +70,15 @@ class UserCommands(commands.Cog):
         """
         await ctx.channel.purge(limit=amount + 1)
 
+    @commands.command(description="Sends bot invite link",
+                      ignore_extra=False)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def invite(self, ctx: discord.ext.commands.context.Context):
+        """
+        Sends an invite link for this bot, so you can add it to you own server.
+        """
+        await ctx.send(self.bot.invite_link)
+
     @commands.command(name='test',
                       ignore_extra=False,
                       aliases=['t'])
