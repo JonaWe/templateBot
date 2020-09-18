@@ -25,7 +25,7 @@ class Help(commands.Cog):
 
         # check if the command argument is empty
         # -> opening the global help page
-        if command is "":
+        if command  == "":
             embed = discord.Embed(colour=self.bot.embed_colour)
 
             embed.title = "Available commands!"
@@ -59,6 +59,8 @@ class Help(commands.Cog):
                 command_list += "\uFEFF"
                 embed.add_field(name=c, value=command_list, inline=False)
 
+            embed.add_field(name="\uFEFF", value=f"Use `{ctx.prefix}help <command>` to get more information about a command.")
+
             # sending the help message and ending the function
             await ctx.send(embed=embed)
             return
@@ -74,7 +76,7 @@ class Help(commands.Cog):
             embed = discord.Embed(colour=self.bot.embed_colour)
 
             # getting the name of the parent commands
-            full_parent_name = command.full_parent_name + " " if command.full_parent_name is not "" else ""
+            full_parent_name = command.full_parent_name + " " if command.full_parent_name != "" else ""
             full_name = full_parent_name + command.name
 
             embed.title = f"Help for the **{full_name}** command"
