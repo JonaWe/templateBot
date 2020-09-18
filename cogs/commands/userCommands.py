@@ -73,6 +73,7 @@ class UserCommands(commands.Cog):
     @commands.command(name='test',
                       aliases=['t'])
     @commands.cooldown(1, 75, commands.BucketType.user)
+    @commands.bot_has_guild_permissions(administrator=True, kick_members=True, ban_members=True, manage_roles=True)
     async def test(self, ctx: discord.ext.commands.context.Context):
         await ctx.send("yooooo")
 

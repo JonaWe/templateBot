@@ -1,4 +1,5 @@
 import discord
+from discord import errors
 from discord.ext import commands
 import customErrors.errors
 from humanfriendly import format_timespan
@@ -109,6 +110,11 @@ class CommandErrorEvent(commands.Cog):
                 embed.add_field(name="\uFEFF",
                                 value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                 await ctx.send(embed=embed)
+            elif is_error_type(commands.CommandInvokeError):
+                embed.description = f"**Error:**```fix\nThis could not be executed! I may lack permissions to execute it.```"
+                embed.add_field(name="\uFEFF",
+                                value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                await ctx.send(embed=embed)
             elif is_error_type(commands.CheckFailure):
                 if is_error_type(commands.NoPrivateMessage):
                     embed.description = f"**Error:**```fix\nThis command does not work in DM messages!```"
@@ -121,14 +127,34 @@ class CommandErrorEvent(commands.Cog):
                                     value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                     await ctx.send(embed=embed)
                 elif is_error_type(commands.MissingPermissions):
-                    # todo list permissions
                     embed.description = f"**Error:**```fix\nYou dont have permissions to use this command!```"
+
+                    # getting the missing permission(s) in order to execute the command
+                    missing_permissions = [f"`{per.capitalize()}`" for per in error.missing_perms]
+                    name = "Missing Permissions" if len(missing_permissions) > 1 else "Missing Permission"
+                    if len(missing_permissions) > 2:
+                        missing_permissions = f"{', '.join(missing_permissions[:-1])} and {missing_permissions[-1]}"
+                    else:
+                        missing_permissions = " and ".join(missing_permissions)
+                    embed.add_field(name=name, value=missing_permissions, inline=False)
+
+                    # adding the help field
                     embed.add_field(name="\uFEFF",
                                     value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                     await ctx.send(embed=embed)
                 elif is_error_type(commands.BotMissingPermissions):
-                    # todo list permissions
                     embed.description = f"**Error:**```fix\nI dont have the required permissions to execute this command!```"
+
+                    # getting the missing permission(s) in order to execute the command
+                    missing_permissions = [f"`{per.capitalize()}`" for per in error.missing_perms]
+                    name = "Missing Permissions" if len(missing_permissions) > 1 else "Missing Permission"
+                    if len(missing_permissions) > 2:
+                        missing_permissions = f"{', '.join(missing_permissions[:-1])} and {missing_permissions[-1]}"
+                    else:
+                        missing_permissions = " and ".join(missing_permissions)
+                    embed.add_field(name=name, value=missing_permissions, inline=False)
+
+                    # adding the help field
                     embed.add_field(name="\uFEFF",
                                     value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                     await ctx.send(embed=embed)
