@@ -82,6 +82,11 @@ class CommandErrorEvent(commands.Cog):
                         embed.add_field(name="\uFEFF",
                                         value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                         await ctx.send(embed=embed)
+                elif is_error_type(customErrors.errors.NoPermissionsToViewThisCommand):
+                    embed.description = f"**Error:**```fix\nYou do not have permissions to view this command!```"
+                    embed.add_field(name="\uFEFF",
+                                    value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                    await ctx.send(embed=embed)
                 else:
                     embed.description = f"**Error:**```fix\nYou have used this command incorrectly!```"
                     embed.add_field(name="\uFEFF",

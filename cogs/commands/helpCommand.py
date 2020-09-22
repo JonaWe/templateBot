@@ -3,6 +3,7 @@ import os
 import discord
 from discord.ext import commands
 from humanfriendly import format_timespan
+import customErrors.errors
 
 
 class Help(commands.Cog):
@@ -42,8 +43,14 @@ class Help(commands.Cog):
                         cogs.remove(str(file[:-3]))
 
             for c in cogs:
+                cog = self.bot.get_cog(c)
+
+                # skipping the owner commands cog if the user is not an owner
+                if cog.qualified_name == "OwnerCommands" and not await self.bot.is_owner(ctx.author):
+                    continue
+
                 command_list = ""
-                for command in self.bot.get_cog(c).walk_commands():
+                for command in cog.walk_commands():
                     # check if command is a subcommand to only display top level commands
                     if command.parent is not None:
                         continue
@@ -73,6 +80,12 @@ class Help(commands.Cog):
 
             if command is None:
                 raise discord.ext.commands.BadArgument("Invalid command passed for the help command")
+
+            # check if the commands belongs to a cog
+            if command.cog is not None:
+                # raising an error if the command is an owner command an the user is not an owner
+                if command.cog.qualified_name == "OwnerCommands" and not await self.bot.is_owner(ctx.author):
+                    raise customErrors.errors.NoPermissionsToViewThisCommand()
 
             embed = discord.Embed(colour=self.bot.embed_colour)
 
