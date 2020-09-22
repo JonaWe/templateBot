@@ -19,6 +19,8 @@ class MyBot(commands.Bot):
     embed_colour = discord.Colour.gold()
     emoji = {"repeat": "\U0001F501"}
     DEFAULTPREFIX = '-'
+    # todo save devmode in a config json file
+    devmode = False
 
     def get_my_prefix(self, bot, ctx):
         if ctx.guild:
@@ -48,6 +50,11 @@ class MyBot(commands.Bot):
         # ignore messages from the bot itself
         if message.author == self.user:
             return False
+
+        # ignoring messages form users if devmode is turned on
+        if self.devmode:
+            if not await self.is_owner(message.author):
+                return False
 
         # ignore commands that are not in bot-commands channel
         if isinstance(message.channel, discord.TextChannel) and message.channel.name != "bot-commands":
