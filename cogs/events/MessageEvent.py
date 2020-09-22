@@ -12,7 +12,7 @@ class MessageEvent(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        if not await self.bot.check_message_reply(message):
+        if not await self.bot.check_message_reply(message, False):
             return
 
         prefix = self.bot.get_my_prefix(self.bot, message)

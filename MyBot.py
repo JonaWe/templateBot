@@ -46,7 +46,7 @@ class MyBot(commands.Bot):
     async def on_ready(self):
         print(f"---------\nlogged in as <{self.user}>\n---------")
 
-    async def check_message_reply(self, message):
+    async def check_message_reply(self, message, main_instance: bool):
         # ignore messages from the bot itself
         if message.author == self.user:
             return False
@@ -54,6 +54,9 @@ class MyBot(commands.Bot):
         # ignoring messages form users if devmode is turned on
         if self.devmode:
             if not await self.is_owner(message.author):
+                # if the methode was run by the main on_message event
+                if main_instance:
+                    await message.channel.send("```diff\n- The developer only mode is currently turned on! Therefore I will only process messages form the developer(s) of this bot.```")
                 return False
 
         # ignore commands that are not in bot-commands channel
@@ -72,7 +75,7 @@ class MyBot(commands.Bot):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if not await self.check_message_reply(message):
+        if not await self.check_message_reply(message, True):
             return
 
         await self.process_commands(message)
