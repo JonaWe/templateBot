@@ -51,14 +51,6 @@ class MyBot(commands.Bot):
         if message.author == self.user:
             return False
 
-        # ignoring messages form users if devmode is turned on
-        if self.devmode:
-            if not await self.is_owner(message.author):
-                # if the methode was run by the main on_message event
-                if main_instance:
-                    await message.channel.send("```diff\n- The developer only mode is currently turned on! Therefore I will only process messages form the developer(s) of this bot.```")
-                return False
-
         # ignore commands that are not in bot-commands channel
         if isinstance(message.channel, discord.TextChannel) and message.channel.name != "bot-commands":
             return False
@@ -71,6 +63,18 @@ class MyBot(commands.Bot):
         if message.author.id in self.blacklisted_users:
             return False
 
+        # ignoring messages form users if devmode is turned on
+        if self.devmode:
+            if not await self.is_owner(message.author):
+                # if the methode was run by the main on_message event
+                if main_instance:
+                    if isinstance(message.channel, discord.TextChannel):
+                        pref = json_helper.get_prefix(message.guild.id, self)
+                        if message.content.startswith(pref):
+                            await message.channel.send("```diff\n- The developer only mode is currently turned on! Therefore I will only process messages form the developer(s) of this bot.```")
+                    else:
+                        await message.channel.send("```diff\n- The developer only mode is currently turned on! Therefore I will only process messages form the developer(s) of this bot.```")
+                return False
         return True
 
     @commands.Cog.listener()
