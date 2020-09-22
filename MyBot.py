@@ -12,15 +12,15 @@ class MyBot(commands.Bot):
     author_mention = "<@306139277195083776>"
     blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
     total_executed_commands = json_helper.read_json("stats")["executed_commands"]
-    invite_link = "https://discord.com/api/oauth2/authorize?client_id=752564236076580994&permissions=8&scope=bot"
     total_user = -1
     total_server = -1
     cwd = str(Path(__file__).parent)
-    embed_colour = discord.Colour.gold()
     emoji = {"repeat": "\U0001F501"}
-    DEFAULTPREFIX = '-'
-    # todo save devmode in a config json file
-    devmode = False
+    config = json_helper.read_json("config")
+    DEFAULTPREFIX = config["default-prefix"]
+    embed_colour = int(config["default-embed-colour"], 0) #discord.Colour.gold()
+    invite_link = config["bot-invite-link"]
+    devmode = config["devmode"]
 
     def get_my_prefix(self, bot, ctx):
         if ctx.guild:

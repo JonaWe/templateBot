@@ -17,6 +17,7 @@ class OwnerCommands(commands.Cog):
 
     @commands.group(description="Turning the devmode on an off",
                     aliases=["dm", "d"])
+
     @commands.is_owner()
     @commands.bot_has_guild_permissions(send_messages=True)
     async def devmode(self, ctx: discord.ext.commands.context.Context):
@@ -33,6 +34,9 @@ class OwnerCommands(commands.Cog):
         Turns the devmode of this bot on so that other users cannot interact with it.
         """
         self.bot.devmode = True
+        data = json_helper.read_json("config")
+        data["devmode"] = self.bot.devmode
+        json_helper.write_json("config", data)
         await ctx.send("```diff\n+ Devmode has been turned on```")
 
 
@@ -42,7 +46,10 @@ class OwnerCommands(commands.Cog):
         """
         Turns the devmode of this bot off so that other users can interact with it.
         """
-        self.bot.devmode = True
+        self.bot.devmode = False
+        data = json_helper.read_json("config")
+        data["devmode"] = self.bot.devmode
+        json_helper.write_json("config", data)
         await ctx.send("```diff\n- Devmode has been turned off```")
 
 
