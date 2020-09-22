@@ -33,10 +33,8 @@ class OwnerCommands(commands.Cog):
         """
         Turns the devmode of this bot on so that other users cannot interact with it.
         """
-        self.bot.devmode = True
-        data = json_helper.read_json("config")
-        data["devmode"] = self.bot.devmode
-        json_helper.write_json("config", data)
+        self.bot.config["devmode"] = True
+        json_helper.write_json("config", self.bot.config)
         await ctx.send("```diff\n+ Devmode has been turned on```")
 
 
@@ -46,10 +44,8 @@ class OwnerCommands(commands.Cog):
         """
         Turns the devmode of this bot off so that other users can interact with it.
         """
-        self.bot.devmode = False
-        data = json_helper.read_json("config")
-        data["devmode"] = self.bot.devmode
-        json_helper.write_json("config", data)
+        self.bot.config["devmode"] = False
+        json_helper.write_json("config", self.bot.config)
         await ctx.send("```diff\n- Devmode has been turned off```")
 
 
@@ -60,7 +56,7 @@ class OwnerCommands(commands.Cog):
         """
         This command returns the devmode state the bot is currently in.
         """
-        if self.bot.devmode:
+        if self.bot.config["devmode"]:
             await ctx.send("```diff\n+ Devmode is currently turned on```")
         else:
             await ctx.send("```diff\n- Devmode is currently turned off```")
@@ -106,6 +102,18 @@ class OwnerCommands(commands.Cog):
             json_helper.write_json("blacklist", data)
 
         await ctx.send(f"{user.display_name} has been removed from the blacklist.")
+
+    @commands.command(description="Converts hex to integer",
+                      aliases=['hti'])
+    async def hextoint(self, ctx: commands.context.Context, hexnumber: str):
+        """
+        Converts a hexadecimal number into an integer.
+        """
+        try:
+            num = int(hexnumber, 16)
+            await ctx.send(f"Converted the hex number `{str(hexnumber)}` to the integer `{str(num)}`.")
+        except:
+            raise commands.BadArgument()
 
 def setup(bot):
     bot.add_cog(OwnerCommands(bot))

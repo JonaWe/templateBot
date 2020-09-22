@@ -21,4 +21,4 @@ def get_prefix(guild_id, bot):
     if str(guild_id) in data:
         return data[str(guild_id)]
     else:
-        return bot.DEFAULTPREFIX
+        return bot.config["default-prefix"]

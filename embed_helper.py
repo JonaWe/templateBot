@@ -2,9 +2,11 @@ import discord
 from discord.ext import commands
 import random
 
+import MyBot
 
-async def send_coin_flip_embed(user: discord.User, channel, bot: commands.Bot):
-    embed = discord.Embed(colour=bot.embed_colour)
+
+async def send_coin_flip_embed(user: discord.User, channel, bot: MyBot):
+    embed = discord.Embed(colour=bot.config["embed-colour"])
 
     embed.set_author(name=f"{user.name} requested a coinflip", icon_url=user.avatar_url)
     embed.title = f"Flipping the coin!"
@@ -16,8 +18,8 @@ async def send_coin_flip_embed(user: discord.User, channel, bot: commands.Bot):
     await message.add_reaction(bot.emoji["repeat"])
 
 
-async def send_roll_dice_embed(user: discord.User, channel, bot: commands.Bot, max_value: int):
-    embed = discord.Embed(colour=bot.embed_colour)
+async def send_roll_dice_embed(user: discord.User, channel, bot: MyBot, max_value: int):
+    embed = discord.Embed(colour=bot.config["embed-colour"])
 
     embed.set_author(name=f"{user.name} requested a diceroll", icon_url=user.avatar_url)
     embed.title = f"Rolling the dice!"

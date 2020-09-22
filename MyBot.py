@@ -16,20 +16,16 @@ class MyBot(commands.Bot):
     cwd = str(Path(__file__).parent)
     emoji = {"repeat": "\U0001F501"}
     config = json_helper.read_json("config")
-    DEFAULTPREFIX = config["default-prefix"]
-    embed_colour = int(config["default-embed-colour"], 0) #discord.Colour.gold()
-    invite_link = config["bot-invite-link"]
-    devmode = config["devmode"]
 
     def get_my_prefix(self, bot, ctx):
         if ctx.guild:
             prefix = json_helper.get_prefix(ctx.guild.id, bot)
         else:
-            prefix = self.DEFAULTPREFIX
+            prefix = self.config["default-prefix"]
         return prefix
 
     def __init__(self):
-        super().__init__(command_prefix=self.get_my_prefix, owner_ids=[306139277195083776], help_command=None,
+        super().__init__(command_prefix=self.get_my_prefix, owner_ids=self.config["owner-ids"], help_command=None,
                          case_insensitive=True)
 
     def run(self, t):
@@ -63,7 +59,7 @@ class MyBot(commands.Bot):
             return False
 
         # ignoring messages form users if devmode is turned on
-        if self.devmode:
+        if self.config["devmode"]:
             if not await self.is_owner(message.author):
                 # if the methode was run by the main on_message event
                 if main_instance:

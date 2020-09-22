@@ -41,7 +41,7 @@ class UserCommands(commands.Cog):
             for o in owner:
                 mention_owners += f"<@{o}>\n"
 
-        embed = discord.Embed(colour=self.bot.embed_colour, title=f"{self.bot.user.name} Stats", description="\uFEFF")
+        embed = discord.Embed(colour=self.bot.config["embed-colour"], title=f"{self.bot.user.name} Stats", description="\uFEFF")
 
         embed.add_field(name="Total Servers", value=str(self.bot.total_server))
         embed.add_field(name="Total Users", value=str(self.bot.total_user))
@@ -85,7 +85,7 @@ class UserCommands(commands.Cog):
         """
         Sends an invite link for this bot, so you can add it to you own server.
         """
-        await ctx.send(self.bot.invite_link)
+        await ctx.send(self.bot.config["bot-invite-link"])
 
     @commands.command(name='test',
                       ignore_extra=False,
