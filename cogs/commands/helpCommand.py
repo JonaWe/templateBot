@@ -21,7 +21,7 @@ class Help(commands.Cog):
         """
         Use the help command to get a list of all the available command. If you want to know more about a command use the help command with the other command as an parameter.
         """
-        # todo dont display owner commands to non owner users
+
         # converts command tuple to string
         command = " ".join(command)
 

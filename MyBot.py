@@ -8,8 +8,7 @@ import json_helper
 
 
 class MyBot(commands.Bot):
-    version = 1.0
-    author_mention = "<@306139277195083776>"
+    __version__ = 1.0
     blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
     total_executed_commands = json_helper.read_json("stats")["executed_commands"]
     total_user = -1
@@ -30,7 +29,7 @@ class MyBot(commands.Bot):
         return prefix
 
     def __init__(self):
-        super().__init__(command_prefix=self.get_my_prefix, owner_id=306139277195083776, help_command=None,
+        super().__init__(command_prefix=self.get_my_prefix, owner_ids=[306139277195083776], help_command=None,
                          case_insensitive=True)
 
     def run(self, t):

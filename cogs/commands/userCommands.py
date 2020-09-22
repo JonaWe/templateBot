@@ -29,19 +29,30 @@ class UserCommands(commands.Cog):
         """
         This command displays some stats and information about this bot.
         """
-        embed = discord.Embed(colour=self.bot.embed_colour, title=f"{self.bot.user.name} Stats", description="\uFEFF")
+        owner = []
+        if self.bot.owner_ids:
+            for o in self.bot.owner_ids:
+                owner.append(o)
+        elif self.bot.owner_id:
+            owner.append(self.bot.owner_id)
 
-        embed.timestamp = ctx.message.created_at
-        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
+        mention_owners = ""
+        if len(owner) > 0:
+            for o in owner:
+                mention_owners += f"<@{o}>\n"
+
+        embed = discord.Embed(colour=self.bot.embed_colour, title=f"{self.bot.user.name} Stats", description="\uFEFF")
 
         embed.add_field(name="Total Servers", value=str(self.bot.total_server))
         embed.add_field(name="Total Users", value=str(self.bot.total_user))
         embed.add_field(name="Total Executed Commands", value=str(self.bot.total_executed_commands))
-        embed.add_field(name="Bot Version", value=str(self.bot.version))
+        embed.add_field(name="Bot Version", value=str(self.bot.__version__))
         embed.add_field(name="Running on", value=f"Python {python_version()}")
         embed.add_field(name="Discord.py Version", value=f"{discord.__version__}")
-        embed.add_field(name="Developer", value=self.bot.author_mention)
+        if mention_owners != "":
+            embed.add_field(name="Developer", value=mention_owners)
 
+        embed.timestamp = ctx.message.created_at
         embed.set_footer(text=f"{self.bot.user.name}")
 
         await ctx.send(embed=embed)

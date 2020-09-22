@@ -3,7 +3,6 @@ import asyncio
 import discord
 from discord.ext import commands
 import json_helper
-import customErrors.errors
 
 
 class AdminCommands(commands.Cog):
