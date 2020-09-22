@@ -52,9 +52,6 @@ class UserCommands(commands.Cog):
         if mention_owners != "":
             embed.add_field(name="Developer", value=mention_owners)
 
-        embed.timestamp = ctx.message.created_at
-        embed.set_footer(text=f"{self.bot.user.name}")
-
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['roll dice', 'roll', 'rtd'],
