@@ -49,6 +49,15 @@ class Help(commands.Cog):
                 if cog.qualified_name == "OwnerCommands" and not await self.bot.is_owner(ctx.author):
                     continue
 
+                # skipping the help command cog
+                if cog.qualified_name == "Help":
+                    continue
+
+                # skipping the admin commands for non admins in a guild
+                if isinstance(ctx.author, discord.Member):
+                    if cog.qualified_name == "AdminCommands" and not ctx.author.guild_permissions.administrator:
+                        continue
+
                 command_list = ""
                 for command in cog.walk_commands():
                     # check if command is a subcommand to only display top level commands
@@ -81,11 +90,19 @@ class Help(commands.Cog):
             if command is None:
                 raise discord.ext.commands.BadArgument("Invalid command passed for the help command")
 
+            # stopping hidden commands from being displayed
+            if command.hidden:
+                raise customErrors.errors.NoPermissionsToViewThisCommand()
+
             # check if the commands belongs to a cog
             if command.cog is not None:
                 # raising an error if the command is an owner command an the user is not an owner
                 if command.cog.qualified_name == "OwnerCommands" and not await self.bot.is_owner(ctx.author):
                     raise customErrors.errors.NoPermissionsToViewThisCommand()
+                # raising an error if a member of a guild tries to use the help command on admin cog commands
+                if isinstance(ctx.author, discord.Member):
+                    if command.cog.qualified_name == "AdminCommands" and not ctx.author.guild_permissions.administrator:
+                        raise customErrors.errors.NoPermissionsToViewThisCommand()
 
             embed = discord.Embed(colour=self.bot.config["embed-colour"])
 
