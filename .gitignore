@@ -3,4 +3,3 @@ venv
 *.log
 data
 data/stats.json
-#data/token.json

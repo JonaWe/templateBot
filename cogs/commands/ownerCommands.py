@@ -15,9 +15,9 @@ class OwnerCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
+
     @commands.group(description="Turning the devmode on an off",
                     aliases=["dm", "d"])
-
     @commands.is_owner()
     @commands.bot_has_guild_permissions(send_messages=True)
     async def devmode(self, ctx: discord.ext.commands.context.Context):
@@ -37,7 +37,6 @@ class OwnerCommands(commands.Cog):
         json_helper.write_json("config", self.bot.config)
         await ctx.send("```diff\n+ Devmode has been turned on```")
 
-
     @devmode.command(description="Turns devmode off")
     @commands.is_owner()
     async def off(self, ctx: discord.ext.commands.context.Context):
@@ -47,7 +46,6 @@ class OwnerCommands(commands.Cog):
         self.bot.config["devmode"] = False
         json_helper.write_json("config", self.bot.config)
         await ctx.send("```diff\n- Devmode has been turned off```")
-
 
     @devmode.command(description="Returns the devmode state",
                      aliases=["state", "s"])
@@ -103,8 +101,35 @@ class OwnerCommands(commands.Cog):
 
         await ctx.send(f"{user.display_name} has been removed from the blacklist.")
 
+    @commands.group(description="Manage the config",
+                    aliases=["c"])
+    @commands.is_owner()
+    async def config(self, ctx: discord.ext.commands.context.Context):
+        """
+        Interaction with the config of this bot.
+        """
+        if ctx.invoked_subcommand is None:
+            raise customErrors.errors.SubCommandRequired
+
+    @config.command(description="Updating values in the config",
+                    aliases=['u'])
+    async def update(self, ctx: commands.context.Context, variable: str, value):
+        """
+        Updating a specific value in the config.
+        """
+        # todo propper type check and check if the variable exists
+        if isinstance(self.bot.config[variable], int):
+            value = int(value)
+        else:
+            pass
+        self.bot.config[variable] = value
+        json_helper.write_json("config", self.bot.config)
+        await ctx.send(f"Successfully updated `{variable}` to `{value}`")
+
+
     @commands.command(description="Converts hex to integer",
                       aliases=['hti'])
+    @commands.is_owner()
     async def hextoint(self, ctx: commands.context.Context, hexnumber: str):
         """
         Converts a hexadecimal number into an integer.
