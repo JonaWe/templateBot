@@ -1,0 +1,12 @@
+{
+    "devmode": true,
+    "default-prefix": "-",
+    "embed-colour": 14856199,
+    "bot-invite-link": "https://discord.com/api/oauth2/authorize?client_id=752564236076580994&permissions=8&scope=bot",
+    "owner-ids": [
+        306139277195083776
+    ],
+    "token": {
+        "discord": "NzUyNTY0MjM2MDc2NTgwOTk0.X1ZeDw.YW1URjCAgASAarTXNJJx077O5kc"
+    }
+}
