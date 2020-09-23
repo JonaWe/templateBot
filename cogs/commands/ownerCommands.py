@@ -126,6 +126,12 @@ class OwnerCommands(commands.Cog):
         json_helper.write_json("config", self.bot.config)
         await ctx.send(f"Successfully updated `{variable}` to `{value}`")
 
+    @config.command(description="Reloads the config",
+                    aliases=['r'])
+    async def reload(self, ctx: commands.context.Context):
+        self.bot.config = json_helper.read_json("config")
+        await ctx.send("Successfully reloaded the config!")
+
 
     @commands.command(description="Converts hex to integer",
                       aliases=['hti'])
