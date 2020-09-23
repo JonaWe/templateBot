@@ -129,6 +129,9 @@ class OwnerCommands(commands.Cog):
     @config.command(description="Reloads the config",
                     aliases=['r'])
     async def reload(self, ctx: commands.context.Context):
+        """
+        Reloads the config file into the bot instance.
+        """
         self.bot.config = json_helper.read_json("config")
         await ctx.send("Successfully reloaded the config!")
 
