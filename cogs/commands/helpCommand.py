@@ -62,7 +62,7 @@ class Help(commands.Cog):
                     # command description is empty if there is none
                     command_desc = f" - *{command.description}*" if command.description else ""
 
-                    command_list += f"{ctx.prefix}**{command.name}**{command_desc}\n"
+                    command_list += f"`{ctx.prefix}{command.name}`{command_desc}\n"
 
                 command_list += "\uFEFF"
                 embed.add_field(name=c, value=command_list, inline=False)
