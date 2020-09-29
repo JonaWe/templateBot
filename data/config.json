@@ -1,5 +1,5 @@
 {
-    "devmode": true,
+    "devmode": false,
     "default-prefix": "-",
     "embed-colour": 5592575,
     "bot-invite-link": "https://discord.com/api/oauth2/authorize?client_id=752564236076580994&permissions=8&scope=bot",

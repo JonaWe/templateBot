@@ -3,7 +3,8 @@ import asyncio
 import discord
 from discord.ext import commands
 import customErrors.errors
-
+from json import loads
+from ast import literal_eval
 import json_helper
 
 
@@ -113,18 +114,31 @@ class OwnerCommands(commands.Cog):
 
     @config.command(description="Updating values in the config",
                     aliases=['u'])
-    async def update(self, ctx: commands.context.Context, variable: str, value):
+    async def update(self, ctx: commands.context.Context, variable: str, *value):
         """
         Updating a specific value in the config.
         """
-        # todo propper type check and check if the variable exists
-        if isinstance(self.bot.config[variable], int):
-            value = int(value)
+        # turn value argument into string
+        value = " ".join(value)
+
+        # if the variable is not in the config an error message will be send
+        if variable not in self.bot.config:
+            await ctx.send(f"The variable `{variable}` does not exits in the config of the bot! Therefore it was not updated.")
+            return
+
+        # if the variable is a string it will be converted to a string else the json converter will handle it
+        if isinstance(self.bot.config, str):
+            value = str(value)
         else:
-            pass
+            try:
+                value = loads(value)
+            except:
+                raise commands.BadArgument
+
+        # updating the config
         self.bot.config[variable] = value
         json_helper.write_json("config", self.bot.config)
-        await ctx.send(f"Successfully updated `{variable}` to `{value}`")
+        await ctx.send(f"Successfully updated `{variable}` to `{value}`.")
 
     @config.command(description="Reloads the config",
                     aliases=['r'])
