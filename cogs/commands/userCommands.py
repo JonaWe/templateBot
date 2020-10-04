@@ -20,6 +20,7 @@ class UserCommands(commands.Cog):
         """
         Flips a coin with the result heads or tails
         """
+        await ctx.message.delete()
         await embed_helper.send_coin_flip_embed(ctx.author, ctx, self.bot)
 
     @commands.command(aliases=['botinfo', 'info'],
@@ -60,6 +61,7 @@ class UserCommands(commands.Cog):
         """
         Rolls a dice from 1-6. If you add a number after the command you can set the dice range.
         """
+        await ctx.message.delete()
         if number:
             if number[0].isnumeric():
                 max_value = int(number[0])

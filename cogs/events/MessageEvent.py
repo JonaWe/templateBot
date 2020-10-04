@@ -17,17 +17,6 @@ class MessageEvent(commands.Cog):
 
         prefix = self.bot.get_my_prefix(self.bot, message)
 
-        # checking if a message should be deleted
-        if message.content.startswith(f"{prefix}coinflip") \
-                or message.content.startswith(f"{prefix}flip") \
-                or message.content.startswith(f"{prefix}coin") \
-                or message.content.startswith(f"{prefix}dice") \
-                or message.content.startswith(f"{prefix}roll dice") \
-                or message.content.startswith(f"{prefix}rtd") \
-                or message.content.startswith(f"{prefix}roll"):
-            pass
-            # await message.delete()
-
         # if the bot gets mentioned it replies
         if f"<@!{self.bot.user.id}>" in message.content:
             await message.channel.send(f"I If you need my help use `{prefix}help` to get a list of the available commands.")
