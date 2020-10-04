@@ -26,7 +26,7 @@ class OwnerCommands(commands.Cog):
         Interaction with the devmode of this bot.
         """
         if ctx.invoked_subcommand is None:
-            raise customErrors.errors.SubCommandRequired
+            raise customErrors.errors.SubCommandRequired()
 
     @devmode.command(description="Turns devmode on")
     @commands.is_owner()
@@ -36,7 +36,11 @@ class OwnerCommands(commands.Cog):
         """
         self.bot.config["devmode"] = True
         json_helper.write_json("config", self.bot.config)
-        await ctx.send("```diff\n+ Devmode has been turned on```")
+
+        await ctx.send(embed=discord.Embed(
+            description="```diff\n+ Devmode has been turned on```",
+            colour=self.bot.config["embed-colour"]
+        ))
 
     @devmode.command(description="Turns devmode off")
     @commands.is_owner()
@@ -46,7 +50,11 @@ class OwnerCommands(commands.Cog):
         """
         self.bot.config["devmode"] = False
         json_helper.write_json("config", self.bot.config)
-        await ctx.send("```diff\n- Devmode has been turned off```")
+
+        await ctx.send(embed=discord.Embed(
+            description="```diff\n- Devmode has been turned off```",
+            colour=self.bot.config["embed-colour"]
+        ))
 
     @devmode.command(description="Returns the devmode state",
                      aliases=["state", "s"])
@@ -105,16 +113,17 @@ class OwnerCommands(commands.Cog):
     @commands.group(description="Manage the config",
                     aliases=["c"])
     @commands.is_owner()
-    async def config(self, ctx: discord.ext.commands.context.Context):
+    async def config(self, ctx: commands.context.Context):
         """
         Interaction with the config of this bot.
         """
         if ctx.invoked_subcommand is None:
-            raise customErrors.errors.SubCommandRequired
+            raise customErrors.errors.SubCommandRequired()
+
 
     @config.command(description="Updating values in the config",
                     aliases=['u'])
-    async def update(self, ctx: commands.context.Context, variable: str, *value):
+    async def update(self, ctx: discord.ext.commands.context.Context, variable: str, *value):
         """
         Updating a specific value in the config.
         """
@@ -140,9 +149,11 @@ class OwnerCommands(commands.Cog):
         json_helper.write_json("config", self.bot.config)
         await ctx.send(f"Successfully updated `{variable}` to `{value}`.")
 
-    @config.command(description="Reloads the config",
+    @config.command(name="reload",
+                    description="Reloads the config",
                     aliases=['r'])
-    async def reload(self, ctx: commands.context.Context):
+    @commands.is_owner()
+    async def _reload(self, ctx: discord.ext.commands.context.Context):
         """
         Reloads the config file into the bot instance.
         """
