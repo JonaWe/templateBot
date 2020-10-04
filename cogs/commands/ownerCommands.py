@@ -173,7 +173,31 @@ class OwnerCommands(commands.Cog):
 
         # reloads a specific cog
         if cog:
-            pass
+            if "Command" in cog:
+                path = "commands"
+            elif "Event" in cog:
+                path = "events"
+            elif "Task" in cog:
+                path = "tasks"
+            else:
+                raise customErrors.errors.CogDoesNotExist()
+
+            if not os.path.exists(f"./cogs/{path}/{cog}.py"):
+                raise customErrors.errors.CogDoesNotExist()
+
+            try:
+                print(path, cog)
+                print(f"cogs.{path}.{cog}")
+                self.bot.unload_extension(f"cogs.{path}.{cog}")
+                self.bot.load_extension(f"cogs.{path}.{cog}")
+                embed = discord.Embed(title=f"Successfully reloaded **{cog}**",
+                                      colour=self.bot.config["embed-colour"])
+                await ctx.send(embed=embed)
+            except:
+                embed = discord.Embed(title=f"Failed to reload **{cog}**",
+                                      colour=self.bot.config["embed-colour"])
+                await ctx.send(embed=embed)
+
 
         # reloads all cogs
         else:
@@ -193,10 +217,10 @@ class OwnerCommands(commands.Cog):
                             failed_cogs += f"`{file}`\n"
 
             if successful_cogs != "":
-                embed.add_field(name="Successfully reloaded:", value=successful_cogs)
+                embed.add_field(name="Successfully reloaded:", value=successful_cogs, inline=False)
 
             if failed_cogs != "":
-                embed.add_field(name="Failed to reload:", value=failed_cogs)
+                embed.add_field(name="Failed to reload:", value=failed_cogs, inline=False)
 
             await ctx.send(embed=embed)
 

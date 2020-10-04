@@ -6,3 +6,6 @@ class SubCommandRequired(commands.BadArgument):
 
 class NoPermissionsToViewThisCommand(commands.UserInputError):
     pass
+
+class CogDoesNotExist(commands.UserInputError):
+    pass
