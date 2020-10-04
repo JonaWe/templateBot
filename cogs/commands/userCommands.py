@@ -47,6 +47,7 @@ class UserCommands(commands.Cog):
         embed.add_field(name="Total Servers", value=str(self.bot.total_server))
         embed.add_field(name="Total Users", value=str(self.bot.total_user))
         embed.add_field(name="Total Executed Commands", value=str(self.bot.total_executed_commands))
+        embed.add_field(name="Total Lines of Code", value=self.bot.total_lines_code)
         embed.add_field(name="Bot Version", value=str(self.bot.__version__))
         embed.add_field(name="Running on", value=f"Python {python_version()}")
         embed.add_field(name="Discord.py Version", value=f"{discord.__version__}")
