@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 import discord
 from discord.ext import commands
@@ -161,6 +162,45 @@ class OwnerCommands(commands.Cog):
             await ctx.send(f"Converted the hex number `{str(hexnumber)}` to the integer `{str(num)}`.")
         except:
             raise commands.BadArgument()
+
+    @commands.is_owner()
+    @commands.command(description="Reloads COGs",
+                      aliases=["r"])
+    async def reload(self, ctx: commands.context.Context, cog=None):
+        """
+        Reloads either all or a specific cog from this bot.
+        """
+
+        # reloads a specific cog
+        if cog:
+            pass
+
+        # reloads all cogs
+        else:
+            embed = discord.Embed(
+                title="Reloading all cogs",colour=self.bot.config["embed-colour"])
+            cog_types = ["events", "commands", "tasks"]
+            successful_cogs = ""
+            failed_cogs = ""
+            for cog_type in cog_types:
+                for file in os.listdir(f"{self.bot.cwd}/cogs/{cog_type}"):
+                    if file.endswith(".py"):
+                        try:
+                            self.bot.unload_extension(f"cogs.{cog_type}.{file[:-3]}")
+                            self.bot.load_extension(f"cogs.{cog_type}.{file[:-3]}")
+                            successful_cogs += f"`{file}`\n"
+                        except:
+                            failed_cogs += f"`{file}`\n"
+
+            if successful_cogs != "":
+                embed.add_field(name="Successfully reloaded:", value=successful_cogs)
+
+            if failed_cogs != "":
+                embed.add_field(name="Failed to reload:", value=failed_cogs)
+
+            await ctx.send(embed=embed)
+
+
 
 def setup(bot):
     bot.add_cog(OwnerCommands(bot))
