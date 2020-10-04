@@ -25,8 +25,12 @@ class MyBot(commands.Bot):
         return prefix
 
     def __init__(self):
+        intents = discord.Intents.default()
+        intents.typing = False
+        intents.presences = False
+        intents.members = True
         super().__init__(command_prefix=self.get_my_prefix, owner_ids=self.config["owner-ids"], help_command=None,
-                         case_insensitive=True)
+                         case_insensitive=True, intents=intents)
 
     def run(self, t):
         cog_types = ["events", "commands", "tasks"]

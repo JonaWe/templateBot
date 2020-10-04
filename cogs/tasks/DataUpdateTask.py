@@ -21,7 +21,7 @@ class DataUpdateTask(commands.Cog):
     @tasks.loop(seconds=2.0)
     async def update_data(self):
         self.bot.total_server = len(self.bot.guilds)
-        self.bot.total_user = len(set(self.bot.get_all_members()))
+        self.bot.total_user = len([u for u in self.bot.users if not u.bot])
 
         async with asyncio.Lock():
             data = json_helper.read_json("stats")
