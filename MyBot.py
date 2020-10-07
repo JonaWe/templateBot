@@ -5,36 +5,27 @@ from pathlib import Path
 import json_helper
 
 
-def lines_of_file(file):
-    return sum(1 for line in open(file))
-
-
-def get_total_code_lines():
-    cwd = json_helper.get_cwd()
-    total_lines = 0
-    cog_types = ["events", "commands", "tasks"]
-    for cog_type in cog_types:
-        for file in os.listdir(f"{cwd}/cogs/{cog_type}"):
-            if file.endswith(".py"):
-                total_lines += lines_of_file(f"{cwd}/cogs/{cog_type}/{file}")
-
-    for file in os.listdir(f"{cwd}"):
+def get_code_lines(cwd=json_helper.get_cwd()):
+    lines = 0
+    for file in os.listdir(cwd):
         if file.endswith(".py"):
-            total_lines += lines_of_file(f"{cwd}/{file}")
+            # gets the number of lines in a single file
+            lines += sum(1 for line in open(f"{cwd}/{file}"))
+        elif not "." in file:
+            # ignoring some paths
+            if not file in ["venv", ".git", "__pycache__"]:
+                lines += get_code_lines(cwd=f"{cwd}/{file}")
 
-    for file in os.listdir(f"{cwd}/customErrors"):
-        if file.endswith(".py"):
-            total_lines += lines_of_file(f"{cwd}/customErrors/{file}")
-
-    return total_lines
+    return lines
 
 class MyBot(commands.Bot):
     __version__ = 1.0
+    __author__ = "Jona Wessendorf"
     blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
     total_executed_commands = json_helper.read_json("stats")["executed_commands"]
     total_user = "Unknown"
     total_server = "Unknown"
-    total_lines_code = get_total_code_lines()
+    total_lines_code = get_code_lines()
     cwd = str(Path(__file__).parent)
     emoji = {"repeat": "\U0001F501"}
     config = json_helper.read_json("config")
