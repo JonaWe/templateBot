@@ -16,8 +16,7 @@ class CommandErrorEvent(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.ext.commands.context.Context, error):
         is_error_type = lambda e: isinstance(error, e)
-        # todo implement the embed in a better way including reading the colour for the config
-        embed = discord.Embed(colour=discord.Colour(0x800000))
+        embed = discord.Embed(colour=int(self.bot.config["embed-colours"]["error"], 16))
         embed.title = "There seemed to be an error while processing your command!"
 
         if is_error_type(commands.CommandError):
@@ -122,9 +121,21 @@ class CommandErrorEvent(commands.Cog):
                                 value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                 await ctx.send(embed=embed)
             elif is_error_type(commands.CommandInvokeError):
-                embed.description = f"**Error:**```fix\nThis could not be executed! I may lack permissions to execute it.```"
+                owner = []
+                if self.bot.owner_ids:
+                    for o in self.bot.owner_ids:
+                        owner.append(o)
+                elif self.bot.owner_id:
+                    owner.append(self.bot.owner_id)
+
+                mention_owners = ""
+                if len(owner) > 0:
+                    for o in owner:
+                        mention_owners += f"<@{o}>\n"
+
+                embed.description = f"**Error:**```fix\nAn unexpected error occurred!```"
                 embed.add_field(name="\uFEFF",
-                                value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
+                                value=f"Please report the error the the author of the bot:\n{mention_owners}")
                 await ctx.send(embed=embed)
             elif is_error_type(commands.CheckFailure):
                 if is_error_type(commands.NoPrivateMessage):
