@@ -40,8 +40,8 @@ class MyBot(commands.Bot):
 
     def __init__(self):
         intents = discord.Intents.default()
+        intents.presences = True
         intents.typing = False
-        intents.presences = False
         intents.members = True
 
         super().__init__(command_prefix=self.get_my_prefix, owner_ids=self.config["owner-ids"], help_command=None,

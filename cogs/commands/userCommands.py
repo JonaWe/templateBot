@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from platform import python_version
+from datetime import datetime
 
 import embed_helper
 
@@ -88,6 +89,33 @@ class UserCommands(commands.Cog):
         )
         embed.set_footer(text="This message will delete itself after 15 seconds!")
         await ctx.send(embed=embed, delete_after=15)
+
+    @commands.command(description="Info about a member")
+    @commands.guild_only()
+    async def member(self, ctx: commands.context.Context, user: discord.Member):
+        roles = ""
+        for role in user.roles:
+            if role.name == "@everyone":
+                continue
+            roles += role.mention + "\n"
+
+        if roles == "":
+            roles = "@everyone"
+
+        embed = discord.Embed(
+            title=f"Info about {user.display_name}",
+            colour=user.color,
+            description=f"These are some information about {user.mention}"
+        )
+        embed.add_field(name="Tag", value=user.name + "#" + user.discriminator)
+        embed.add_field(name="Nickname", value=user.display_name)
+        embed.add_field(name="Status", value=user.status)
+        embed.add_field(name="Roles", value=roles, inline=False)
+        embed.add_field(name="Joined Server at", value=user.joined_at.strftime("%d, %b %Y at %H:%M"), inline=False)
+        embed.add_field(name="Created Account at", value=user.created_at.strftime("%d, %b %Y at %H:%M"), inline=False)
+
+        embed.set_thumbnail(url=user.avatar_url)
+        await ctx.send(embed=embed)
 
     @commands.command(description="Sends bot invite link",
                       ignore_extra=False)
