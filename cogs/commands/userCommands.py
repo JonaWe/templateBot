@@ -42,7 +42,7 @@ class UserCommands(commands.Cog):
             for o in owner:
                 mention_owners += f"<@{o}>\n"
 
-        embed = discord.Embed(colour=self.bot.config["embed-colour"], title=f"{self.bot.user.name} Stats", description="\uFEFF")
+        embed = discord.Embed(colour=int(self.bot.config["embed-colours"]["default"], 16), title=f"{self.bot.user.name} Stats", description="\uFEFF")
 
         embed.add_field(name="Total Servers", value=str(self.bot.total_server))
         embed.add_field(name="Total Users", value=str(self.bot.total_user))
@@ -80,6 +80,12 @@ class UserCommands(commands.Cog):
         Wipes the given amount of messages in the channel where the command is executed in. Default amount of wiped messages is 10.
         """
         await ctx.channel.purge(limit=amount + 1)
+        embed = discord.Embed(
+            title=f"I have deleted {amount} messages in this channel!",
+            colour=int(self.bot.config["embed-colours"]["default"], 16)
+        )
+        embed.set_footer(text="This message will delete itself after 15 seconds!")
+        await ctx.send(embed=embed, delete_after=15)
 
     @commands.command(description="Sends bot invite link",
                       ignore_extra=False)

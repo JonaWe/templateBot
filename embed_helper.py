@@ -6,7 +6,7 @@ import MyBot
 
 
 async def send_coin_flip_embed(user: discord.User, channel, bot: MyBot):
-    embed = discord.Embed(colour=bot.config["embed-colour"])
+    embed = discord.Embed(colour=int(bot.config["embed-colours"]["default"], 16))
 
     embed.set_author(name=f"{user.name} requested a coinflip", icon_url=user.avatar_url)
     embed.title = f"Flipping the coin!"
@@ -19,7 +19,7 @@ async def send_coin_flip_embed(user: discord.User, channel, bot: MyBot):
 
 
 async def send_roll_dice_embed(user: discord.User, channel, bot: MyBot, max_value: int):
-    embed = discord.Embed(colour=bot.config["embed-colour"])
+    embed = discord.Embed(colour=int(bot.config["embed-colours"]["default"], 16))
 
     embed.set_author(name=f"{user.name} requested a diceroll", icon_url=user.avatar_url)
     embed.title = f"Rolling the dice!"
