@@ -19,7 +19,10 @@ class MessageEvent(commands.Cog):
 
         # if the bot gets mentioned it replies
         if f"<@!{self.bot.user.id}>" in message.content:
-            await message.channel.send(f"I If you need my help use `{prefix}help` to get a list of the available commands.")
+            await message.channel.send(embed=discord.Embed(
+                title=f"I If you need my help use `{prefix}help` to get a list of the available commands.",
+                colour=int(self.bot.config["embed-colours"]["default"], 16)
+            ))
 
 
 def setup(bot):
