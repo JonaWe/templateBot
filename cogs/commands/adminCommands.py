@@ -26,8 +26,11 @@ class AdminCommands(commands.Cog):
             data = json_helper.read_json("prefixes")
             data[str(ctx.message.guild.id)] = prefix
             json_helper.write_json("prefixes", data)
-        await ctx.send(
-            f"The server prefix has been set to `{prefix}`. To change it again use `{prefix}prefix <prefix>`!")
+        await ctx.send(embed=discord.Embed(
+            title=f"The server prefix has been set to `{prefix}`. To change it again use `{prefix}prefix <prefix>`!",
+            colour=int(self.bot.config["embed-colours"]["default"], 16)
+        ))
+
 
 
 def setup(bot):
