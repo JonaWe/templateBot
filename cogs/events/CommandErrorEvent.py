@@ -16,6 +16,7 @@ class CommandErrorEvent(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.ext.commands.context.Context, error):
         is_error_type = lambda e: isinstance(error, e)
+        # todo implement the embed in a better way including reading the colour for the config
         embed = discord.Embed(colour=discord.Colour(0x800000))
         embed.title = "There seemed to be an error while processing your command!"
 

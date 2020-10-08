@@ -39,7 +39,7 @@ class OwnerCommands(commands.Cog):
 
         await ctx.send(embed=discord.Embed(
             description="```diff\n+ Devmode has been turned on```",
-            colour=self.bot.config["embed-colour"]
+            colour=int(self.bot.config["embed-colours"]["confirm"], 16)
         ))
 
     @devmode.command(description="Turns devmode off")
@@ -53,7 +53,7 @@ class OwnerCommands(commands.Cog):
 
         await ctx.send(embed=discord.Embed(
             description="```diff\n- Devmode has been turned off```",
-            colour=self.bot.config["embed-colour"]
+            colour=int(self.bot.config["embed-colours"]["warning"], 16)
         ))
 
     @devmode.command(description="Returns the devmode state",
@@ -63,10 +63,14 @@ class OwnerCommands(commands.Cog):
         """
         This command returns the devmode state the bot is currently in.
         """
+        embed = discord.Embed()
         if self.bot.config["devmode"]:
-            await ctx.send("```diff\n+ Devmode is currently turned on```")
+            embed.colour = int(self.bot.config["embed-colours"]["confirm"], 16)
+            embed.description = "```diff\n+ Devmode is currently turned on```"
         else:
-            await ctx.send("```diff\n- Devmode is currently turned off```")
+            embed.colour = int(self.bot.config["embed-colours"]["warning"], 16)
+            embed.description = "```diff\n- Devmode is currently turned off```"
+        await ctx.send(embed=embed)
 
     @commands.group(description="Manage the blacklist")
     @commands.is_owner()
@@ -83,13 +87,22 @@ class OwnerCommands(commands.Cog):
         """
         Blacklists users from the bot. The blacklisted users cannot use any commands from this bot.
         """
+        if user.id in self.bot.blacklisted_users:
+            await ctx.send(embed=discord.Embed(
+                title=f"`{user.display_name}` was already in the blacklist.",
+                colour=int(self.bot.config["embed-colours"]["error"], 16)
+            ))
+            return
         self.bot.blacklisted_users.append(user.id)
         async with asyncio.Lock():
             data = json_helper.read_json("blacklist")
             data["commandBlacklistedUsers"].append(user.id)
             json_helper.write_json("blacklist", data)
 
-        await ctx.send(f"{user.display_name} has been added to the blacklist.")
+        await ctx.send(embed=discord.Embed(
+            title=f"`{user.display_name}` has been added to the blacklist.",
+            colour=int(self.bot.config["embed-colours"]["default"], 16)
+        ))
 
     @blacklist.command(description="Removes users from the blacklist for this bot",
                        aliases=["r"])
@@ -98,6 +111,10 @@ class OwnerCommands(commands.Cog):
         Removes users from blacklist for bot commands.
         """
         if user.id not in self.bot.blacklisted_users:
+            await ctx.send(embed=discord.Embed(
+                title=f"`{user.display_name}` was not found in the blacklist and therefore could not be removed from it.",
+                colour=int(self.bot.config["embed-colours"]["error"], 16)
+            ))
             await ctx.send(
                 f"{user.display_name} was not found in the blacklist and therefore could not be removed from it.")
             return
@@ -108,7 +125,10 @@ class OwnerCommands(commands.Cog):
             data["commandBlacklistedUsers"].remove(user.id)
             json_helper.write_json("blacklist", data)
 
-        await ctx.send(f"{user.display_name} has been removed from the blacklist.")
+        await ctx.send(embed=discord.Embed(
+            title=f"`{user.display_name}` has been removed from the blacklist.",
+            colour=int(self.bot.config["embed-colours"]["default"], 16)
+        ))
 
     @commands.group(description="Manage the config",
                     aliases=["c"])
@@ -132,7 +152,10 @@ class OwnerCommands(commands.Cog):
 
         # if the variable is not in the config an error message will be send
         if variable not in self.bot.config:
-            await ctx.send(f"The variable `{variable}` does not exits in the config of the bot! Therefore it was not updated.")
+            await ctx.send(embed=discord.Embed(
+                title=f"The variable `{variable}` does not exits in the config of the bot! Therefore it was not updated.",
+                colour=int(self.bot.config["embed-colours"]["default"], 16)
+            ))
             return
 
         # if the variable is a string it will be converted to a string else the json converter will handle it
@@ -147,7 +170,10 @@ class OwnerCommands(commands.Cog):
         # updating the config
         self.bot.config[variable] = value
         json_helper.write_json("config", self.bot.config)
-        await ctx.send(f"Successfully updated `{variable}` to `{value}`.")
+        await ctx.send(embed=discord.Embed(
+            title=f"Successfully updated `{variable}` to `{value}`.",
+            colour=int(self.bot.config["embed-colours"]["default"], 16)
+        ))
 
     @config.command(name="reload",
                     description="Reloads the config",
@@ -158,7 +184,10 @@ class OwnerCommands(commands.Cog):
         Reloads the config file into the bot instance.
         """
         self.bot.config = json_helper.read_json("config")
-        await ctx.send("Successfully reloaded the config!")
+        await ctx.send(embed=discord.Embed(
+            title="Successfully reloaded the config!",
+            colour=int(self.bot.config["embed-colours"]["default"], 16)
+        ))
 
 
     @commands.command(description="Converts hex to integer",
@@ -193,7 +222,8 @@ class OwnerCommands(commands.Cog):
             else:
                 raise customErrors.errors.CogDoesNotExist()
 
-            if not os.path.exists(f"./cogs/{path}/{cog}.py"):
+            print(f"./cogs/{path}/{cog}.py")
+            if not os.path.exists(f"{json_helper.get_cwd()}/cogs/{path}/{cog}.py"):
                 raise customErrors.errors.CogDoesNotExist()
 
             try:
