@@ -1,7 +1,6 @@
 {
     "devmode": true,
     "default-prefix": "-",
-    "embed-colour": 5592575,
     "embed-colours": {
         "default": "0x5555FF",
         "warning": "0xBD0B0B",

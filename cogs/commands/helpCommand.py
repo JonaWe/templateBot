@@ -28,7 +28,7 @@ class Help(commands.Cog):
         # check if the command argument is empty
         # -> opening the global help page
         if command  == "":
-            embed = discord.Embed(colour=self.bot.config["embed-colour"])
+            embed = discord.Embed(colour=int(self.bot.config["embed-colours"]["default"], 16))
 
             embed.title = "Available commands!"
 
@@ -104,7 +104,7 @@ class Help(commands.Cog):
                     if command.cog.qualified_name == "AdminCommands" and not ctx.author.guild_permissions.administrator:
                         raise customErrors.errors.NoPermissionsToViewThisCommand()
 
-            embed = discord.Embed(colour=self.bot.config["embed-colour"])
+            embed = discord.Embed(colour=int(self.bot.config["embed-colours"]["default"], 16))
 
             # getting the name of the parent commands
             full_parent_name = command.full_parent_name + " " if command.full_parent_name != "" else ""
