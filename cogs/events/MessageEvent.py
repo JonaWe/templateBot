@@ -13,20 +13,21 @@ class MessageEvent(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        if profanity.contains_profanity(message.content) and isinstance(message.channel, discord.TextChannel):
-            await message.delete()
+        if self.bot.config["profanity-check"]:
+            if profanity.contains_profanity(message.content) and isinstance(message.channel, discord.TextChannel):
+                await message.delete()
 
-            # todo check if the content is longer than the max chars for the description
-            censored_content = profanity.censor(message.content, '\\*')
+                # todo check if the content is longer than the max chars for the description
+                censored_content = profanity.censor(message.content, '\\*')
 
-            embed = discord.Embed(
-                title=f"I have deleted a message from {message.author.display_name} because it contains bad words! ",
-                description=f"Content of the message:\n||{censored_content}||\n\uFEFF",
-                colour=int(self.bot.config["embed-colours"]["default"], 16)
-            )
+                embed = discord.Embed(
+                    title=f"I have deleted a message from {message.author.display_name} because it contains bad words! ",
+                    description=f"Content of the message:\n||{censored_content}||\n\uFEFF",
+                    colour=int(self.bot.config["embed-colours"]["default"], 16)
+                )
 
-            embed.set_footer(text="This message will delete itself after 15 seconds!")
-            await message.channel.send(embed=embed, delete_after=15)
+                embed.set_footer(text="This message will delete itself after 15 seconds!")
+                await message.channel.send(embed=embed, delete_after=15)
 
         if not await self.bot.check_message_reply(message, False):
             return

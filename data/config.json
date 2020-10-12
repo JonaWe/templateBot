@@ -1,5 +1,6 @@
 {
     "devmode": true,
+    "profanity-check": true,
     "default-prefix": "-",
     "embed-colours": {
         "default": "0x5555FF",
