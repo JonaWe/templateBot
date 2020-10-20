@@ -15,8 +15,31 @@ class UserCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    @commands.command(description="Creates a 4 connect game")
-    async def con(self, ctx: commands.context.Context):
+    @commands.command(description="Creates a 4 connect game",
+                      aliases=["fc"])
+    @commands.guild_only()
+    async def fourconnect(self, ctx: commands.context.Context, user: discord.Member):
+        """
+        This command creates a new four connect game between you and another given user.
+        """
+        # todo confirmation from the user that he wants to play a game
+        # check if the user is the author itself
+        if ctx.author == user:
+            await ctx.send(embed=discord.Embed(
+                colour=int(self.bot.config["embed-colours"]["warning"], 16),
+                title="You cannot play against yourself!"
+            ))
+            return
+
+        # ignoring the command if the user already has a game in progress
+        if f"{ctx.author.id}" in self.bot.active_games:
+            await ctx.send(embed=discord.Embed(
+                colour=int(self.bot.config["embed-colours"]["warning"], 16),
+                title="You already have a game in progress!"
+            ))
+            return
+
+
         game = four_connect.Game()
         game.add_coin(player=2, column=3)
         game.add_coin(player=1, column=2)
@@ -29,9 +52,27 @@ class UserCommands(commands.Cog):
         game.add_coin(player=1, column=0)
         game.add_coin(player=2, column=0)
         embed = discord.Embed()
-        embed.title = "Game"
-        embed.description = game.to_embed_string()
-        await ctx.send(embed=embed)
+        embed.title = f"Four Connect"
+        embed.description = f"{ctx.author.mention} vs {user.mention}\n\uFEFF\n{game.to_embed_string()}"
+        embed.colour = int(self.bot.config["embed-colours"]["default"], 16)
+        embed.set_footer(text="By clicking on the reaction u can place u chip.")
+
+        message = await ctx.send(embed=embed)
+        self.bot.active_games[f"{ctx.author.id}"] = {
+            "player": ctx.author.id,
+            "enemy": user.id,
+            "game": game,
+            "embed": embed,
+            "message": message
+        }
+        await message.add_reaction("1\N{variation selector-16}\N{combining enclosing keycap}")
+        await message.add_reaction("2\N{variation selector-16}\N{combining enclosing keycap}")
+        await message.add_reaction("3\N{variation selector-16}\N{combining enclosing keycap}")
+        await message.add_reaction("4\N{variation selector-16}\N{combining enclosing keycap}")
+        await message.add_reaction("5\N{variation selector-16}\N{combining enclosing keycap}")
+        await message.add_reaction("6\N{variation selector-16}\N{combining enclosing keycap}")
+
+
 
     @commands.command(aliases=['flip', 'coinflip', 'cf'],
                       ignore_extra=False,
