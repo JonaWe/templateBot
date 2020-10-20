@@ -1,80 +1,71 @@
 class Game:
     def __init__(self):
-        self.field = [[None for x in range(6)] for y in range(6)]
+        self.board = [[None for x in range(6)] for y in range(6)]
 
     def add_coin(self, player: int, column: int):
         for row in range(6):
-            if not self.field[column][row]:
-                self.field[column][row] = player
+            if not self.board[column][row]:
+                self.board[column][row] = player
                 return True
         return False
 
     def check_for_win(self):
-        # check for vertical wins
-        for row in range(6):
-            player = self.check_vertical(row)
-            if player:
-                print(f"Vertical win {player}")
-
-        # check for horizontal wins
+        # vertical
         for col in range(6):
-            player = self.check_horizontal(col)
-            if player:
-                print(f"Horizontal win {player}")
+            for row in range(6 - 3):
+                if self.board[col][row] \
+                        and self.board[col][row] == self.board[col][row+1] \
+                        and self.board[col][row+1] == self.board[col][row+2] \
+                        and self.board[col][row+2] == self.board[col][row+3]:
+                    print("v win")
+                    return self.board[col][row]
 
-    def check_vertical(self, row: int, col=0, length=0, player=None):
-        # win found
-        if length == 4:
-            return player
+        # horizontal
+        for col in range(6 - 3):
+            for row in range(6):
+                if self.board[col][row] \
+                        and self.board[col][row] == self.board[col+1][row] \
+                        and self.board[col+1][row] == self.board[col+2][row] \
+                        and self.board[col+2][row] == self.board[col+3][row]:
+                    print("h win")
+                    return self.board[col][row]
 
-        # out of range
-        elif col > 5:
-            return None
+        # positive diagonal
+        for col in range(6 - 3):
+            for row in range(6 - 3):
+                if self.board[col][row] \
+                        and self.board[col][row] == self.board[col+1][row+1] \
+                        and self.board[col+1][row+1] == self.board[col+2][row+2] \
+                        and self.board[col+2][row+2] == self.board[col+3][row+3]:
+                    print("p d win")
+                    return self.board[col][row]
 
-        # resetting because the field is empty
-        elif not self.field[col][row]:
-            return self.check_vertical(row, col+1)
+        # negative diagonals
+        for col in range(6 - 3):
+            for row in range(3, 6):
+                if self.board[col][row] \
+                        and self.board[col][row] == self.board[col+1][row-1] \
+                        and self.board[col+1][row-1] == self.board[col+2][row-2] \
+                        and self.board[col+2][row-2] == self.board[col+3][row-3]:
+                    print("n d win")
+                    return self.board[col][row]
 
-        # if the previous and current player are the same
-        elif player == self.field[col][row]:
-            return self.check_vertical(row, col+1, length+1, player)
-
-        # starting for a new player
-        else:
-            return self.check_vertical(row, col+1, 1, self.field[col][row])
-
-    def check_horizontal(self, col, row=0, length=0, player=None):
-        # win found
-        if length == 4:
-            return player
-
-        # out of range
-        elif row > 5:
-            return None
-
-        # resetting because the field is empty
-        elif not self.field[col][row]:
-            return self.check_horizontal(col, row + 1)
-
-        # if the previous and current player are the same
-        elif player == self.field[col][row]:
-            return self.check_horizontal(col, row + 1, length + 1, player)
-
-        # starting for a new player
-        else:
-            return self.check_horizontal(col, row + 1, 1, self.field[col][row])
+        return None
 
     def print(self):
-        print(self.field)
+        print(self.board)
 
 if __name__ == "__main__":
     game = Game()
-    game.add_coin(1, 0)
-    game.add_coin(2, 0)
-    game.add_coin(2, 0)
-    game.add_coin(2, 0)
-    game.add_coin(2, 0)
-    game.add_coin(1, 0)
-    game.add_coin(1, 0)
+    game.add_coin(player=2, column=3)
+    game.add_coin(player=1, column=2)
+    game.add_coin(player=2, column=2)
+    game.add_coin(player=1, column=1)
+    game.add_coin(player=1, column=1)
+    game.add_coin(player=2, column=1)
+    game.add_coin(player=1, column=0)
+    game.add_coin(player=1, column=0)
+    game.add_coin(player=1, column=0)
+    game.add_coin(player=2, column=0)
     game.print()
-    game.check_for_win()
+    print(game.check_for_win())
