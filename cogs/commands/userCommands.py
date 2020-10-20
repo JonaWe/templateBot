@@ -3,6 +3,7 @@ from discord.ext import commands
 from platform import python_version
 from datetime import datetime
 from games import four_connect
+import customErrors
 
 import embed_helper
 
@@ -15,10 +16,38 @@ class UserCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    @commands.command(description="Creates a 4 connect game",
+    @commands.group(description="Managing a four connect game",
                       aliases=["fc"])
     @commands.guild_only()
-    async def fourconnect(self, ctx: commands.context.Context, user: discord.Member):
+    async def fourconnent(self, ctx):
+        """
+        With this command you can manage your four connect game.
+        """
+        if ctx.invoked_subcommand is None:
+            raise customErrors.errors.SubCommandRequired()
+
+    @fourconnent.command(description="Ends a four connect game",
+                         aliases=["e", "stop", "exit"])
+    async def end(self, ctx: commands.context.Context):
+        """
+        This commands ends your current four connect game.
+        """
+        if f"{ctx.author.id}" in self.bot.active_games:
+            await ctx.send(embed=discord.Embed(
+                colour=int(self.bot.config["embed-colours"]["default"], 16),
+                title="I have stopped your four connect game!"
+            ))
+            self.bot.active_games.pop(str(ctx.author.id))
+        else:
+            await ctx.send(embed=discord.Embed(
+                colour=int(self.bot.config["embed-colours"]["warning"], 16),
+                title="You are not playing four connect!"
+            ))
+
+
+    @fourconnent.command(description="Starts a four connect game",
+                      aliases=["s"])
+    async def start(self, ctx: commands.context.Context, user: discord.Member):
         """
         This command creates a new four connect game between you and another given user.
         """
