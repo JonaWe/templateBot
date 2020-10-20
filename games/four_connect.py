@@ -1,12 +1,20 @@
+from random import randrange
+
 class Game:
     def __init__(self):
         self.board = [[None for x in range(6)] for y in range(6)]
+        self.current_player = randrange(1, 2)
 
     def add_coin(self, player: int, column: int):
-        for row in range(6):
-            if not self.board[column][row]:
-                self.board[column][row] = player
-                return True
+        if self.current_player == player:
+            for row in range(6):
+                if not self.board[column][row]:
+                    self.board[column][row] = player
+                    if self.current_player == 1:
+                        self.current_player = 2
+                    elif self.current_player == 2:
+                        self.current_player = 1
+                    return True
         return False
 
     def check_for_win(self):
