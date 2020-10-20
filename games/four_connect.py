@@ -65,26 +65,33 @@ class Game:
             row -= 1
         print(out[:])
 
+    def to_embed_string(self):
+        out = ""
+        row = 5
+        while row >= 0:
+            for col in range(6):
+                if self.board[col][row] == 1:
+                    out += " :yellow_circle: "
+                elif self.board[col][row] == 2:
+                    out += " :red_circle: "
+                else:
+                    out += " :black_circle: "
+            out += "\n"
+            row -= 1
+        return out
+
+
 if __name__ == "__main__":
     game = Game()
     game.add_coin(player=2, column=3)
-    game.print()
     game.add_coin(player=1, column=2)
-    game.print()
     game.add_coin(player=2, column=2)
-    game.print()
     game.add_coin(player=1, column=1)
-    game.print()
     game.add_coin(player=1, column=1)
-    game.print()
     game.add_coin(player=2, column=1)
-    game.print()
     game.add_coin(player=1, column=0)
-    game.print()
     game.add_coin(player=1, column=0)
-    game.print()
     game.add_coin(player=1, column=0)
-    game.print()
     game.add_coin(player=2, column=0)
     game.print()
     print(game.check_for_win())

@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from platform import python_version
 from datetime import datetime
+from games import four_connect
 
 import embed_helper
 
@@ -13,6 +14,24 @@ class UserCommands(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
+
+    @commands.command(description="Creates a 4 connect game")
+    async def con(self, ctx: commands.context.Context):
+        game = four_connect.Game()
+        game.add_coin(player=2, column=3)
+        game.add_coin(player=1, column=2)
+        game.add_coin(player=2, column=2)
+        game.add_coin(player=1, column=1)
+        game.add_coin(player=1, column=1)
+        game.add_coin(player=2, column=1)
+        game.add_coin(player=1, column=0)
+        game.add_coin(player=1, column=0)
+        game.add_coin(player=1, column=0)
+        game.add_coin(player=2, column=0)
+        embed = discord.Embed()
+        embed.title = "Game"
+        embed.description = game.to_embed_string()
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=['flip', 'coinflip', 'cf'],
                       ignore_extra=False,

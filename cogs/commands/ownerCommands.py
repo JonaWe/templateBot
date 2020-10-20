@@ -232,18 +232,18 @@ class OwnerCommands(commands.Cog):
                 self.bot.unload_extension(f"cogs.{path}.{cog}")
                 self.bot.load_extension(f"cogs.{path}.{cog}")
                 embed = discord.Embed(title=f"Successfully reloaded **{cog}**",
-                                      colour=self.bot.config["embed-colour"])
+                                      colour=int(self.bot.config["embed-colours"]["default"], 16))
                 await ctx.send(embed=embed)
             except:
                 embed = discord.Embed(title=f"Failed to reload **{cog}**",
-                                      colour=self.bot.config["embed-colour"])
+                                      colour=int(self.bot.config["embed-colours"]["default"], 16))
                 await ctx.send(embed=embed)
 
 
         # reloads all cogs
         else:
             embed = discord.Embed(
-                title="Reloading all cogs",colour=self.bot.config["embed-colour"])
+                title="Reloading all cogs",colour=int(self.bot.config["embed-colours"]["default"], 16))
             cog_types = ["events", "commands", "tasks"]
             successful_cogs = ""
             failed_cogs = ""
