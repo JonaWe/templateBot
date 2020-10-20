@@ -70,7 +70,8 @@ class ReactionEvent(commands.Cog):
                             embed.clear_fields()
                             embed.add_field(name="Winner", value=w)
                             await message.edit(embed=embed)
-                            self.bot.active_games.pop(player.id)
+                            await message.clear_reactions()
+                            self.bot.active_games.pop(str(player.id))
                     await reaction.message.remove_reaction(reaction.emoji, user)
 
                 # delete any other reactions
