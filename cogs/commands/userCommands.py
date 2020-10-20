@@ -41,36 +41,35 @@ class UserCommands(commands.Cog):
 
 
         game = four_connect.Game()
-        game.add_coin(player=2, column=3)
-        game.add_coin(player=1, column=2)
-        game.add_coin(player=2, column=2)
-        game.add_coin(player=1, column=1)
-        game.add_coin(player=1, column=1)
-        game.add_coin(player=2, column=1)
-        game.add_coin(player=1, column=0)
-        game.add_coin(player=1, column=0)
-        game.add_coin(player=1, column=0)
-        game.add_coin(player=2, column=0)
         embed = discord.Embed()
         embed.title = f"Four Connect"
         embed.description = f"{ctx.author.mention} vs {user.mention}\n\uFEFF\n{game.to_embed_string()}"
         embed.colour = int(self.bot.config["embed-colours"]["default"], 16)
+        if game.current_player == 1:
+            cp = ctx.author.display_name
+        else:
+            cp = user.display_name
+        embed.add_field(name="Current Player", value=cp)
         embed.set_footer(text="By clicking on the reaction u can place u chip.")
 
         message = await ctx.send(embed=embed)
+
         self.bot.active_games[f"{ctx.author.id}"] = {
-            "player": ctx.author.id,
-            "enemy": user.id,
+            "player": ctx.author,
+            "enemy": user,
             "game": game,
             "embed": embed,
             "message": message
         }
+
+        # adds all the reaction to the message
         await message.add_reaction("1\N{variation selector-16}\N{combining enclosing keycap}")
         await message.add_reaction("2\N{variation selector-16}\N{combining enclosing keycap}")
         await message.add_reaction("3\N{variation selector-16}\N{combining enclosing keycap}")
         await message.add_reaction("4\N{variation selector-16}\N{combining enclosing keycap}")
         await message.add_reaction("5\N{variation selector-16}\N{combining enclosing keycap}")
         await message.add_reaction("6\N{variation selector-16}\N{combining enclosing keycap}")
+        await message.add_reaction("7\N{variation selector-16}\N{combining enclosing keycap}")
 
 
 

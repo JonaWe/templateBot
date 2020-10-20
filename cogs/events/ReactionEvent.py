@@ -38,9 +38,45 @@ class ReactionEvent(commands.Cog):
 
         for k, v in self.bot.active_games.items():
             if reaction.message.id == v["message"].id:
-                embed = v["embed"]
-                message = v["message"]
-                await message.channel.send("yeeeeeee")
+                game = v["game"]
+                # reaction if from the player who is currently active
+                if game.current_player == 1 and user.id == v["player"].id \
+                    or game.current_player == 2 and user.id == v["enemy"].id:
+                    embed = v["embed"]
+                    message = v["message"]
+                    player = v['player']
+                    enemy = v['enemy']
+
+                    col = int(reaction.emoji[0]) - 1
+                    if game.add_coin(game.current_player, col):
+                        embed.description = f"{player.mention} vs {enemy.mention}\n\uFEFF\n{game.to_embed_string()}"
+
+                        if game.current_player == 1:
+                            cp = player.display_name
+                        else:
+                            cp = enemy.display_name
+                        embed.clear_fields()
+                        embed.add_field(name="Current Player", value=cp)
+
+                        await message.edit(embed=embed)
+
+                        # checking for an game end
+                        winner = game.check_for_win()
+                        if winner:
+                            if winner == 1:
+                                w = v["player"].display_name
+                            else:
+                                w = v["enemy"].display_name
+                            embed.clear_fields()
+                            embed.add_field(name="Winner", value=w)
+                            await message.edit(embed=embed)
+                            self.bot.active_games.pop(player.id)
+                    await reaction.message.remove_reaction(reaction.emoji, user)
+
+                # delete any other reactions
+                else:
+                    await reaction.message.remove_reaction(reaction.emoji, user)
+
 
 
 def setup(bot):

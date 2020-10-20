@@ -2,8 +2,8 @@ from random import randrange
 
 class Game:
     def __init__(self):
-        self.board = [[None for x in range(6)] for y in range(6)]
-        self.current_player = randrange(1, 2)
+        self.board = [[None for x in range(6)] for y in range(7)]
+        self.current_player = randrange(1, 3)
 
     def add_coin(self, player: int, column: int):
         if self.current_player == player:
@@ -19,7 +19,7 @@ class Game:
 
     def check_for_win(self):
         # vertical
-        for col in range(6):
+        for col in range(7):
             for row in range(6 - 3):
                 if self.board[col][row] \
                         and self.board[col][row] == self.board[col][row+1] \
@@ -29,7 +29,7 @@ class Game:
                     return self.board[col][row]
 
         # horizontal
-        for col in range(6 - 3):
+        for col in range(7 - 3):
             for row in range(6):
                 if self.board[col][row] \
                         and self.board[col][row] == self.board[col+1][row] \
@@ -39,7 +39,7 @@ class Game:
                     return self.board[col][row]
 
         # positive diagonal
-        for col in range(6 - 3):
+        for col in range(7 - 3):
             for row in range(6 - 3):
                 if self.board[col][row] \
                         and self.board[col][row] == self.board[col+1][row+1] \
@@ -49,7 +49,7 @@ class Game:
                     return self.board[col][row]
 
         # negative diagonals
-        for col in range(6 - 3):
+        for col in range(7 - 3):
             for row in range(3, 6):
                 if self.board[col][row] \
                         and self.board[col][row] == self.board[col+1][row-1] \
@@ -77,16 +77,16 @@ class Game:
         out = ""
         row = 5
         while row >= 0:
-            for col in range(6):
+            for col in range(7):
                 if self.board[col][row] == 1:
-                    out += " :yellow_circle: "
+                    out += " :yellow_circle: \uFEFF"
                 elif self.board[col][row] == 2:
-                    out += " :red_circle: "
+                    out += " :red_circle: \uFEFF"
                 else:
-                    out += " :black_circle: "
+                    out += " :black_circle: \uFEFF"
             out += "\n"
             row -= 1
-        return out
+        return out + ":one: \uFEFF :two: \uFEFF :three: \uFEFF :four: \uFEFF :five: \uFEFF :six: \uFEFF :seven:"
 
 
 if __name__ == "__main__":
