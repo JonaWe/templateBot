@@ -37,6 +37,18 @@ class MusicCommands(commands.Cog):
 
         await ctx.send(f"Connected to {channel.name}")
 
+    @commands.command(name="disconnect",
+                      aliases=["leave", "stop"],
+                      description="Disconnects the bot for the voice channel")
+    @commands.guild_only()
+    async def disconnect_(self, ctx: commands.context.Context):
+        vc = ctx.voice_client
+
+        if vc:
+            await ctx.guild.voice_client.disconnect()
+        else:
+            await ctx.send("I am currently not connected to any channel")
+
 
 
 def setup(bot):
