@@ -25,7 +25,6 @@ class Game:
                         and self.board[col][row] == self.board[col][row+1] \
                         and self.board[col][row+1] == self.board[col][row+2] \
                         and self.board[col][row+2] == self.board[col][row+3]:
-                    print("v win")
                     return self.board[col][row]
 
         # horizontal
@@ -35,7 +34,6 @@ class Game:
                         and self.board[col][row] == self.board[col+1][row] \
                         and self.board[col+1][row] == self.board[col+2][row] \
                         and self.board[col+2][row] == self.board[col+3][row]:
-                    print("h win")
                     return self.board[col][row]
 
         # positive diagonal
@@ -45,7 +43,6 @@ class Game:
                         and self.board[col][row] == self.board[col+1][row+1] \
                         and self.board[col+1][row+1] == self.board[col+2][row+2] \
                         and self.board[col+2][row+2] == self.board[col+3][row+3]:
-                    print("p d win")
                     return self.board[col][row]
 
         # negative diagonals
@@ -55,7 +52,6 @@ class Game:
                         and self.board[col][row] == self.board[col+1][row-1] \
                         and self.board[col+1][row-1] == self.board[col+2][row-2] \
                         and self.board[col+2][row-2] == self.board[col+3][row-3]:
-                    print("n d win")
                     return self.board[col][row]
 
         all_filled = True

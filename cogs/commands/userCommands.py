@@ -1,10 +1,8 @@
 import discord
 from discord.ext import commands
 from platform import python_version
-from datetime import datetime
 from games import four_connect
 import customErrors
-import time
 
 import embed_helper
 
