@@ -38,45 +38,79 @@ class ReactionEvent(commands.Cog):
 
         for k, v in self.bot.active_games.items():
             if reaction.message.id == v["message"].id:
-                game = v["game"]
-                # reaction if from the player who is currently active
-                if game.current_player == 1 and user.id == v["player"].id \
-                    or game.current_player == 2 and user.id == v["enemy"].id:
-                    embed = v["embed"]
-                    message = v["message"]
-                    player = v['player']
-                    enemy = v['enemy']
-
-                    col = int(reaction.emoji[0]) - 1
-                    if game.add_coin(game.current_player, col):
-                        embed.description = f"{player.mention} vs {enemy.mention}\n\uFEFF\n{game.to_embed_string()}"
-
+                if not v["accepted"]:
+                    if user.id == v["enemy"].id and reaction.emoji == "\U00002705":
+                        game = v["game"]
+                        embed = discord.Embed()
+                        embed.title = f"Four Connect"
+                        embed.description = f"{v['player'].mention} vs {user.mention}\n\uFEFF\n{game.to_embed_string()}"
+                        embed.colour = int(self.bot.config["embed-colours"]["default"], 16)
                         if game.current_player == 1:
-                            cp = player.display_name
+                            cp = v['player'].display_name
                         else:
-                            cp = enemy.display_name
-                        embed.clear_fields()
+                            cp = user.display_name
                         embed.add_field(name="Current Player", value=cp)
+                        embed.set_footer(text="By clicking on the reaction u can place u chip.")
 
-                        await message.edit(embed=embed)
+                        await message.clear_reactions()
+                        await message.edit(embed=embed, content="")
 
-                        # checking for an game end
-                        winner = game.check_for_win()
-                        if winner:
-                            if winner == 1:
-                                w = v["player"].display_name
-                            else:
-                                w = v["enemy"].display_name
-                            embed.clear_fields()
-                            embed.add_field(name="Winner", value=w)
-                            await message.edit(embed=embed)
-                            await message.clear_reactions()
-                            self.bot.active_games.pop(str(player.id))
-                    await reaction.message.remove_reaction(reaction.emoji, user)
+                        v["accepted"] = True
 
-                # delete any other reactions
+                        # adds all the reaction to the message
+                        await message.add_reaction("1\N{variation selector-16}\N{combining enclosing keycap}")
+                        await message.add_reaction("2\N{variation selector-16}\N{combining enclosing keycap}")
+                        await message.add_reaction("3\N{variation selector-16}\N{combining enclosing keycap}")
+                        await message.add_reaction("4\N{variation selector-16}\N{combining enclosing keycap}")
+                        await message.add_reaction("5\N{variation selector-16}\N{combining enclosing keycap}")
+                        await message.add_reaction("6\N{variation selector-16}\N{combining enclosing keycap}")
+                        await message.add_reaction("7\N{variation selector-16}\N{combining enclosing keycap}")
+
+
+                    else:
+                        await reaction.message.remove_reaction(reaction.emoji, user)
                 else:
-                    await reaction.message.remove_reaction(reaction.emoji, user)
+                    game = v["game"]
+                    # reaction if from the player who is currently active
+                    if game.current_player == 1 and user.id == v["player"].id \
+                        or game.current_player == 2 and user.id == v["enemy"].id:
+                        embed = v["embed"]
+                        message = v["message"]
+                        player = v['player']
+                        enemy = v['enemy']
+
+                        col = int(reaction.emoji[0]) - 1
+                        if game.add_coin(game.current_player, col):
+                            embed.description = f"{player.mention} vs {enemy.mention}\n\uFEFF\n{game.to_embed_string()}"
+
+                            if game.current_player == 1:
+                                cp = player.display_name
+                            else:
+                                cp = enemy.display_name
+                            embed.clear_fields()
+                            embed.add_field(name="Current Player", value=cp)
+
+                            await message.edit(embed=embed)
+
+                            # checking for an game end
+                            winner = game.check_for_win()
+                            if winner:
+                                if winner == 1:
+                                    w = v["player"].display_name
+                                else:
+                                    w = v["enemy"].display_name
+                                embed.clear_fields()
+                                embed.add_field(name="Winner", value=w)
+
+                                embed.set_footer(text="This game took <time> to finish.")
+                                await message.edit(embed=embed)
+                                await message.clear_reactions()
+                                self.bot.active_games.pop(str(player.id))
+                        await reaction.message.remove_reaction(reaction.emoji, user)
+
+                    # delete any other reactions
+                    else:
+                        await reaction.message.remove_reaction(reaction.emoji, user)
 
 
 
