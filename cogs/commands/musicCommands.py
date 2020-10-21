@@ -35,7 +35,7 @@ class MusicCommands(commands.Cog):
         else:
             await channel.connect()
 
-        await ctx.send(f"Connected to {channel.name}")
+        await ctx.send(f"Connected to {channel.name} with the volume level {vc.source.volume}")
 
     @commands.command(name="disconnect",
                       aliases=["leave", "stop"],
@@ -48,6 +48,23 @@ class MusicCommands(commands.Cog):
             await ctx.guild.voice_client.disconnect()
         else:
             await ctx.send("I am currently not connected to any channel")
+
+    @commands.command(description="Changes the volume of the bot")
+    @commands.guild_only()
+    async def volume(self, ctx: commands.context.Context, level: int):
+        vc = ctx.voice_client
+
+        if not vc:
+            return await ctx.send("I am not connected to a voice channel right now.")
+
+        if not  0 < level < 101:
+            return await ctx.send("Select a volume level between 0 and 100.")
+
+        if vc.source:
+            # todo verify that the volume works
+            vc.source.volume = level / 100
+
+            await ctx.send(f"Changed the volume to {level}%")
 
 
 
