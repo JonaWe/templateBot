@@ -27,6 +27,7 @@ ffmpeg_options = {
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
+
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
         super().__init__(source, volume)
@@ -36,23 +37,65 @@ class YTDLSource(discord.PCMVolumeTransformer):
         self.url = data.get("url")
 
     @classmethod
-    async def form_url(cls, url, *, loop=None, stream=False):
+    async def from_url(cls, url, *, loop=None, stream=False):
         loop = loop or asyncio.get_event_loop()
         data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
 
-        if "entries" in data:
-            data = data[0]
+        if 'entries' in data:
+            data = data['entries'][0]
 
-        filename = data["url"] if stream else ytdl.prepare_filename(data)
-        return cls(discord.PCMVolumeTransformer(filename, **ffmpeg_options), data=data)
+        filename = data['url'] if stream else ytdl.prepare_filename(data)
+        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+
 
 class MusicCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.players = {}
 
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
+
+    @commands.command(name="play",
+                      description="Plays a song form youtube")
+    @commands.guild_only()
+    async def play_(self, ctx: commands.context.Context, *, url):
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
+            ctx.voice_client.play(player)#, after=lambda e: print('Player error: %s' % e) if e else None)
+            self.players[ctx.guild.id] = ctx.voice_client
+        await ctx.send(f"Now playing {player.title}")
+
+    @commands.command(name="stop",
+                      description="Stops the current song")
+    @commands.guild_only()
+    async def stop_(self, ctx: commands.context.Context):
+        vc = self.players[ctx.guild.id]
+        if vc:
+            async with ctx.typing():
+                vc.stop()
+                await ctx.send(f"Stopped playing")
+
+    @commands.command(name="pause",
+                      description="Pauses the current song")
+    @commands.guild_only()
+    async def pause_(self, ctx: commands.context.Context):
+        vc = self.players[ctx.guild.id]
+        if vc:
+            async with ctx.typing():
+                vc.pause()
+                await ctx.send(f"Paused playing")
+
+    @commands.command(name="resume",
+                      description="Resumes the current song")
+    @commands.guild_only()
+    async def resume_(self, ctx: commands.context.Context):
+        vc = self.players[ctx.guild.id]
+        if vc:
+            async with ctx.typing():
+                vc.resume()
+                await ctx.send(f"Resumed playing")
 
 
     @commands.command(name="connect",
@@ -79,10 +122,10 @@ class MusicCommands(commands.Cog):
         else:
             await channel.connect()
 
-        await ctx.send(f"Connected to {channel.name} with the volume level {vc.source.volume}")
+        await ctx.send(f"Connected to {channel.name}")
 
     @commands.command(name="disconnect",
-                      aliases=["leave", "stop"],
+                      aliases=["leave"],
                       description="Disconnects the bot for the voice channel")
     @commands.guild_only()
     async def disconnect_(self, ctx: commands.context.Context):
