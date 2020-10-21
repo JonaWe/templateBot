@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+import time
 import embed_helper
 
 
@@ -101,8 +102,9 @@ class ReactionEvent(commands.Cog):
                                     w = v["enemy"].display_name
                                 embed.clear_fields()
                                 embed.add_field(name="Winner", value=w)
-
-                                embed.set_footer(text="This game took <time> to finish.")
+                                end = int(round(time.time() * 1000))
+                                secs = int(round((end - int(v["started"])) / 1000))
+                                embed.set_footer(text=f"This game took {secs} seconds to finish.")
                                 await message.edit(embed=embed)
                                 await message.clear_reactions()
                                 self.bot.active_games.pop(str(player.id))
