@@ -71,7 +71,7 @@ class UserCommands(commands.Cog):
 
         game = four_connect.Game()
         embed = discord.Embed()
-        embed.title = f"Four Connect Game Request"
+        embed.title = f"Four Connect Game"
         embed.description = f"{ctx.author.mention} has challenged {user.mention} to play four connect."
         embed.set_footer(text="Reply with the checkmark to accept the game invite.")
         embed.colour = int(self.bot.config["embed-colours"]["default"], 16)

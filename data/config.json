@@ -1,5 +1,5 @@
 {
-    "devmode": true,
+    "devmode": false,
     "profanity-check": true,
     "default-prefix": "-",
     "embed-colours": {
@@ -13,6 +13,6 @@
         306139277195083776
     ],
     "token": {
-        "discord": "NzUyNTY0MjM2MDc2NTgwOTk0.X1ZeDw.YW1URjCAgASAarTXNJJx077O5kc"
+        "discord": "NzUyNTY0MjM2MDc2NTgwOTk0.X1ZeDw.tvoN7fDlXXphUxLr69mEQ3I4fgA"
     }
 }

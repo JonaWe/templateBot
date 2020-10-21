@@ -44,7 +44,7 @@ class ReactionEvent(commands.Cog):
                         game = v["game"]
                         embed = discord.Embed()
                         embed.title = f"Four Connect"
-                        embed.description = f"{v['player'].mention} vs {user.mention}\n\uFEFF\n{game.to_embed_string()}"
+                        embed.description = f"{v['player'].mention} (:yellow_circle:) vs {user.mention} (:red_circle:)\n\uFEFF\n{game.to_embed_string()}"
                         embed.colour = int(self.bot.config["embed-colours"]["default"], 16)
                         if game.current_player == 1:
                             cp = v['player'].display_name
@@ -83,7 +83,7 @@ class ReactionEvent(commands.Cog):
 
                         col = int(reaction.emoji[0]) - 1
                         if game.add_coin(game.current_player, col):
-                            embed.description = f"{player.mention} vs {enemy.mention}\n\uFEFF\n{game.to_embed_string()}"
+                            embed.description = f"{player.mention} (:yellow_circle:) vs {enemy.mention} (:red_circle:)\n\uFEFF\n{game.to_embed_string()}"
 
                             if game.current_player == 1:
                                 cp = player.display_name
@@ -97,12 +97,13 @@ class ReactionEvent(commands.Cog):
                             # checking for an game end
                             winner = game.check_for_win()
                             if winner:
-                                if winner == 1:
-                                    w = v["player"].display_name
-                                else:
-                                    w = v["enemy"].display_name
                                 embed.clear_fields()
-                                embed.add_field(name="Winner", value=w)
+                                if winner == 1:
+                                    embed.add_field(name="Winner", value=v["player"].display_name)
+                                elif winner == 2:
+                                    embed.add_field(name="Winner", value=v["enemy"].display_name)
+                                else:
+                                    embed.add_field(name="Draw", value="\uFEFF")
                                 end = int(round(time.time() * 1000))
                                 secs = int(round((end - int(v["started"])) / 1000))
                                 embed.set_footer(text=f"This game took {secs} seconds to finish.")

@@ -58,6 +58,15 @@ class Game:
                     print("n d win")
                     return self.board[col][row]
 
+        all_filled = True
+        for col in range(7):
+            for row in range(6):
+                all_filled &= self.board[col][row] is not None
+
+        if all_filled:
+            return -1
+
+
         return None
 
     def print(self):
