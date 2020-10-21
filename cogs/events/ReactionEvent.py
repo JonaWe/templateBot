@@ -57,6 +57,7 @@ class ReactionEvent(commands.Cog):
                         await message.edit(embed=embed, content="")
 
                         v["accepted"] = True
+                        v["started"] = int(round(time.time() * 1000))
 
                         # adds all the reaction to the message
                         await message.add_reaction("1\N{variation selector-16}\N{combining enclosing keycap}")

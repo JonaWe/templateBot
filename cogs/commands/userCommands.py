@@ -82,7 +82,7 @@ class UserCommands(commands.Cog):
 
         self.bot.active_games[f"{ctx.author.id}"] = {
             "accepted": False,
-            "started": int(round(time.time() * 1000)),
+            "started": 0,
             "player": ctx.author,
             "enemy": user,
             "game": game,
