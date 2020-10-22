@@ -1,12 +1,30 @@
 import asyncio
 import os
+import unicodedata
+
+import youtube_dl
 
 import discord
 from discord.ext import commands
 import customErrors.errors
 from json import loads
 import json_helper
+import string
 
+valid_filename_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+char_limit = 255
+
+def clean_filename(filename, whitelist=valid_filename_chars, replace=' '):
+    # replace spaces
+    for r in replace:
+        filename = filename.replace(r, '_')
+
+    # keep only valid ascii chars
+    cleaned_filename = unicodedata.normalize('NFKD', filename).encode('ASCII', 'ignore').decode()
+
+    # keep only whitelisted chars
+    cleaned_filename = ''.join(c for c in cleaned_filename if c in whitelist)
+    return cleaned_filename[:char_limit]
 
 class OwnerCommands(commands.Cog):
     def __init__(self, bot):
@@ -15,6 +33,41 @@ class OwnerCommands(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
+
+
+    @commands.command(name="yt2mp3",
+                      aliases=["yt"],
+                      description="Downloads the audio of a YouTube video")
+    @commands.is_owner()
+    async def youtube_to_mp3(self, ctx: commands.context.Context, *, video_url: str):
+        with ctx.typing():
+            video_info = youtube_dl.YoutubeDL().extract_info(
+                url=video_url, download=False
+            )
+
+            filename = clean_filename(video_info['title'])
+
+            SAVE_PATH = '/'.join(os.getcwd().split('/')[:3]) + '/yt_downloads'
+
+            options = {
+                'format': 'bestaudio/best',
+                "keepvideo": False,
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+                'outtmpl': SAVE_PATH + f"/{filename}.%(ext)s",
+
+            }
+
+            with youtube_dl.YoutubeDL(options) as ytdl:
+                ytdl.download([video_info["webpage_url"]])
+
+            await ctx.send(file=discord.File(f"yt_downloads/{filename}.mp3"))
+
+
+
 
 
     @commands.group(description="Turning the devmode on an off",
