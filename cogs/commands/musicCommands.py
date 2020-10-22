@@ -73,9 +73,8 @@ class MusicCommands(commands.Cog):
     async def stop_(self, ctx: commands.context.Context):
         vc = self.players[ctx.guild.id]
         if vc:
-            async with ctx.typing():
-                vc.stop()
-                await ctx.send(f"Stopped playing")
+            vc.stop()
+            await ctx.send(f"Stopped playing")
 
     @commands.command(name="pause",
                       description="Pauses the current song")
@@ -83,9 +82,8 @@ class MusicCommands(commands.Cog):
     async def pause_(self, ctx: commands.context.Context):
         vc = self.players[ctx.guild.id]
         if vc:
-            async with ctx.typing():
-                vc.pause()
-                await ctx.send(f"Paused playing")
+            vc.pause()
+            await ctx.send(f"Paused playing")
 
     @commands.command(name="resume",
                       description="Resumes the current song")
@@ -93,9 +91,8 @@ class MusicCommands(commands.Cog):
     async def resume_(self, ctx: commands.context.Context):
         vc = self.players[ctx.guild.id]
         if vc:
-            async with ctx.typing():
-                vc.resume()
-                await ctx.send(f"Resumed playing")
+            vc.resume()
+            await ctx.send(f"Resumed playing")
 
 
     @commands.command(name="connect",
