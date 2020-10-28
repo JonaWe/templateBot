@@ -1,15 +1,20 @@
 from random import randrange
 
+from random import randrange
+import copy
+import numpy as np
+
+
 class Game:
     def __init__(self):
-        self.board = [[None for x in range(6)] for y in range(7)]
+        self.board = np.zeros((6, 7), dtype=int)
         self.current_player = randrange(1, 3)
 
-    def add_coin(self, player: int, column: int):
+    def add_chip(self, player: int, column: int):
         if self.current_player == player:
-            for row in range(6):
-                if not self.board[column][row]:
-                    self.board[column][row] = player
+            for row in range(5, -1, -1):
+                if self.board[row][column] == 0:
+                    self.board[row][column] = player
                     if self.current_player == 1:
                         self.current_player = 2
                     elif self.current_player == 2:
@@ -18,84 +23,73 @@ class Game:
         return False
 
     def check_for_win(self):
-        # vertical
-        for col in range(7):
-            for row in range(6 - 3):
-                if self.board[col][row] \
-                        and self.board[col][row] == self.board[col][row+1] \
-                        and self.board[col][row+1] == self.board[col][row+2] \
-                        and self.board[col][row+2] == self.board[col][row+3]:
-                    print("v win")
-                    return self.board[col][row]
-
         # horizontal
-        for col in range(7 - 3):
-            for row in range(6):
-                if self.board[col][row] \
-                        and self.board[col][row] == self.board[col+1][row] \
-                        and self.board[col+1][row] == self.board[col+2][row] \
-                        and self.board[col+2][row] == self.board[col+3][row]:
-                    print("h win")
-                    return self.board[col][row]
+        for row in range(6):
+            for col in range(7 - 3):
+                if self.board[row][col] != 0\
+                        and self.board[row][col] == self.board[row][col + 1] \
+                        and self.board[row][col + 1] == self.board[row][col + 2] \
+                        and self.board[row][col + 2] == self.board[row][col + 3]:
+                    return self.board[row][col]
+
+        # vertical
+        for row in range(6 - 3):
+            for col in range(7):
+                if self.board[row][col] != 0\
+                        and self.board[row][col] == self.board[row + 1][col] \
+                        and self.board[row + 1][col] == self.board[row + 2][col] \
+                        and self.board[row + 2][col] == self.board[row + 3][col]:
+                    return self.board[row][col]
 
         # positive diagonal
-        for col in range(7 - 3):
-            for row in range(6 - 3):
-                if self.board[col][row] \
-                        and self.board[col][row] == self.board[col+1][row+1] \
-                        and self.board[col+1][row+1] == self.board[col+2][row+2] \
-                        and self.board[col+2][row+2] == self.board[col+3][row+3]:
-                    print("p d win")
-                    return self.board[col][row]
+        for row in range(6 - 3):
+            for col in range(7 - 3):
+                if self.board[row][col] != 0\
+                        and self.board[row][col] == self.board[row + 1][col + 1] \
+                        and self.board[row + 1][col + 1] == self.board[row + 2][col + 2] \
+                        and self.board[row + 2][col + 2] == self.board[row + 3][col + 3]:
+                    return self.board[row][col]
 
         # negative diagonals
-        for col in range(7 - 3):
-            for row in range(3, 6):
-                if self.board[col][row] \
-                        and self.board[col][row] == self.board[col+1][row-1] \
-                        and self.board[col+1][row-1] == self.board[col+2][row-2] \
-                        and self.board[col+2][row-2] == self.board[col+3][row-3]:
-                    print("n d win")
-                    return self.board[col][row]
+        for row in range(6 - 3):
+            for col in range(3, 7):
+                if self.board[row][col] != 0 \
+                        and self.board[row][col] == self.board[row + 1][col - 1] \
+                        and self.board[row + 1][col - 1] == self.board[row + 2][col - 2] \
+                        and self.board[row + 2][col - 2] == self.board[row + 3][col - 3]:
+                    return self.board[row][col]
 
         all_filled = True
-        for col in range(7):
-            for row in range(6):
-                all_filled &= self.board[col][row] is not None
+        for row in range(6):
+            for col in range(7):
+                all_filled &= self.board[row][col] == 0
 
         if all_filled:
             return -1
-
 
         return None
 
     def print(self):
         out = ""
-        row = 5
-        while row >= 0:
-            for col in range(6):
-                if self.board[col][row]:
-                    out += f" |{self.board[col][row]}| "
-                else:
-                    out += " | | "
+        for row in range(6):
+            for col in range(7):
+                out += f" {self.board[row][col]} "
             out += "\n"
-            row -= 1
-        print(out[:])
+        print(out)
 
     def to_embed_string(self):
         out = ""
-        row = 5
-        while row >= 0:
+        for row in range(6):
             for col in range(7):
-                if self.board[col][row] == 1:
+                if self.board[row][col] == 1:
                     out += " :yellow_circle: \uFEFF"
-                elif self.board[col][row] == 2:
+                elif self.board[row][col] == 2:
                     out += " :red_circle: \uFEFF"
                 else:
                     out += " :black_circle: \uFEFF"
             out += "\n"
-            row -= 1
         return out + ":one: \uFEFF :two: \uFEFF :three: \uFEFF :four: \uFEFF :five: \uFEFF :six: \uFEFF :seven:"
+
 
 
 if __name__ == "__main__":
