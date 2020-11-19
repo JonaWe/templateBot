@@ -204,6 +204,53 @@ class UserCommands(commands.Cog):
         """
         await ctx.send(self.bot.config["bot-invite-link"])
 
+    @commands.command(name="quotechannel",
+                      aliases=["qc"],
+                      description="Sets a quote channel for the quote command")
+    async def quotechannel(self, ctx: commands.context.Context, channel_id: int):
+        quote_channels = self.bot.channel_ids["quotes"]
+        quote_channels[str(ctx.guild.id)] = channel_id
+        await ctx.channel.send(embed=discord.Embed(
+            title=f"Quote channel id has been set to {channel_id}."
+        ))
+
+    @commands.command(name="quote",
+                      aliases=["q"],
+                      description="Quotes a user.")
+    async def quote(self, ctx: commands.context.Context, user:discord.Member, *, quote):
+        """
+        This command can be used to quote users. This command only works if a quote channel has been setup. You can setup a quote channel using the command: todo
+        """
+        quote_channels = self.bot.channel_ids["quotes"]
+        guild_id = ctx.guild.id
+
+        embed =discord.Embed()
+
+        # quote channel is not setup
+        if not str(guild_id) in quote_channels:
+            embed.title = "Channel does not exist!"
+            await ctx.channel.send(embed=embed)
+            return
+
+        quote_channel = self.bot.get_channel(quote_channels[str(guild_id)])
+
+        # check if the quote channel is a valid channel
+        if not quote_channel:
+            embed.title = "Quote channel is invalid!"
+            await ctx.channel.send(embed=embed)
+            return
+
+        # creates the embed object for the quote
+        embed.colour = user.colour
+        embed.title = "\uFEFF"
+        embed.set_author(name=f"{ctx.author.name} quoted {user.display_name}", icon_url=ctx.author.avatar_url)
+        embed.title = f"\uFEFF\n\"{quote}\"\n\uFEFF\n"
+        embed.set_footer(text=f"{user.display_name}", icon_url=user.avatar_url)
+        embed.timestamp = ctx.message.created_at
+
+        await quote_channel.send(embed=embed)
+
+
     @commands.command(name='test',
                       ignore_extra=False,
                       aliases=['t'])

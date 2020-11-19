@@ -92,19 +92,3 @@ class Game:
             out += "\n"
             row -= 1
         return out + ":one: \uFEFF :two: \uFEFF :three: \uFEFF :four: \uFEFF :five: \uFEFF :six: \uFEFF :seven:"
-
-
-if __name__ == "__main__":
-    game = Game()
-    game.add_coin(player=2, column=3)
-    game.add_coin(player=1, column=2)
-    game.add_coin(player=2, column=2)
-    game.add_coin(player=1, column=1)
-    game.add_coin(player=1, column=1)
-    game.add_coin(player=2, column=1)
-    game.add_coin(player=1, column=0)
-    game.add_coin(player=1, column=0)
-    game.add_coin(player=1, column=0)
-    game.add_coin(player=2, column=0)
-    game.print()
-    print(game.check_for_win())

@@ -23,6 +23,7 @@ class MyBot(commands.Bot):
     __author__ = "Jona Wessendorf"
     blacklisted_users = json_helper.read_json("blacklist")["commandBlacklistedUsers"]
     total_executed_commands = json_helper.read_json("stats")["executed_commands"]
+    channel_ids = json_helper.read_json("channel")
     total_user = "Unknown"
     total_server = "Unknown"
     total_lines_code = get_code_lines()
