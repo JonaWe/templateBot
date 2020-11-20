@@ -1,7 +1,7 @@
 {
     "devmode": false,
-    "profanity-check": true,
-    "default-prefix": "-",
+    "profanity-check": false,
+    "default-prefix": "!",
     "embed-colours": {
         "default": "0x5555FF",
         "warning": "0xBD0B0B",

@@ -209,7 +209,7 @@ class UserCommands(commands.Cog):
                       description="Quotes a user.")
     async def quote(self, ctx: commands.context.Context, user:discord.Member, *, quote):
         """
-        This command can be used to quote users. This command only works if a quote channel has been setup. You can setup a quote channel using the command: todo
+        This command can be used to quote users. This command only works if a quote channel has been setup. You can setup a quote channel using the command: update quote_channel
         """
         quote_channels = self.bot.channel_ids["quotes"]
         guild_id = ctx.guild.id
