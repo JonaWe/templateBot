@@ -58,6 +58,7 @@ class MusicCommands(commands.Cog):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
     @commands.command(name="play",
+                      enabled=False,
                       description="Plays a song form youtube")
     @commands.guild_only()
     async def play_(self, ctx: commands.context.Context, *, url):
@@ -68,6 +69,7 @@ class MusicCommands(commands.Cog):
         await ctx.send(f"Now playing {player.title}")
 
     @commands.command(name="stop",
+                      enabled=False,
                       description="Stops the current song")
     @commands.guild_only()
     async def stop_(self, ctx: commands.context.Context):
@@ -77,6 +79,7 @@ class MusicCommands(commands.Cog):
             await ctx.send(f"Stopped playing")
 
     @commands.command(name="pause",
+                      enabled=False,
                       description="Pauses the current song")
     @commands.guild_only()
     async def pause_(self, ctx: commands.context.Context):
@@ -86,6 +89,7 @@ class MusicCommands(commands.Cog):
             await ctx.send(f"Paused playing")
 
     @commands.command(name="resume",
+                      enabled=False,
                       description="Resumes the current song")
     @commands.guild_only()
     async def resume_(self, ctx: commands.context.Context):
@@ -96,6 +100,7 @@ class MusicCommands(commands.Cog):
 
 
     @commands.command(name="connect",
+                      enabled=False,
                       description="Connects the bot to a voice channel",
                       aliases=["join"])
     @commands.guild_only()
@@ -123,6 +128,7 @@ class MusicCommands(commands.Cog):
 
     @commands.command(name="disconnect",
                       aliases=["leave"],
+                      enabled=False,
                       description="Disconnects the bot for the voice channel")
     @commands.guild_only()
     async def disconnect_(self, ctx: commands.context.Context):
@@ -133,7 +139,8 @@ class MusicCommands(commands.Cog):
         else:
             await ctx.send("I am currently not connected to any channel")
 
-    @commands.command(description="Changes the volume of the bot")
+    @commands.command(description="Changes the volume of the bot",
+                      enabled=False)
     @commands.guild_only()
     async def volume(self, ctx: commands.context.Context, level: int=50):
         vc = ctx.voice_client

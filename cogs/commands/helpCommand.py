@@ -53,6 +53,10 @@ class Help(commands.Cog):
                 if cog.qualified_name == "Help":
                     continue
 
+                # disables the music command cog
+                if cog.qualified_name == "MusicCommands":
+                    continue
+
                 # skipping the admin commands for non admins in a guild
                 if isinstance(ctx.author, discord.Member):
                     if cog.qualified_name == "AdminCommands" and not ctx.author.guild_permissions.administrator:
@@ -66,6 +70,10 @@ class Help(commands.Cog):
 
                     # skip hidden commands commands
                     if command.hidden:
+                        continue
+
+                    # skips disabled commands
+                    if not command.enabled:
                         continue
 
                     # command description is empty if there is none
@@ -92,6 +100,10 @@ class Help(commands.Cog):
 
             # stopping hidden commands from being displayed
             if command.hidden:
+                raise customErrors.errors.NoPermissionsToViewThisCommand()
+
+            # stopping disabled commands from being displayed
+            if not command.enabled:
                 raise customErrors.errors.NoPermissionsToViewThisCommand()
 
             # check if the commands belongs to a cog
