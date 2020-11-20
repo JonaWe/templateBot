@@ -3,7 +3,6 @@ from discord.ext import commands
 from platform import python_version
 from games import four_connect
 import customErrors
-
 import embed_helper
 
 
@@ -204,15 +203,6 @@ class UserCommands(commands.Cog):
         """
         await ctx.send(self.bot.config["bot-invite-link"])
 
-    @commands.command(name="quotechannel",
-                      aliases=["qc"],
-                      description="Sets a quote channel for the quote command")
-    async def quotechannel(self, ctx: commands.context.Context, channel_id: int):
-        quote_channels = self.bot.channel_ids["quotes"]
-        quote_channels[str(ctx.guild.id)] = channel_id
-        await ctx.channel.send(embed=discord.Embed(
-            title=f"Quote channel id has been set to {channel_id}."
-        ))
 
     @commands.command(name="quote",
                       aliases=["q"],

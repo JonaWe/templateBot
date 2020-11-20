@@ -3,6 +3,7 @@ import asyncio
 import discord
 from discord.ext import commands
 import json_helper
+import customErrors
 
 
 class AdminCommands(commands.Cog):
@@ -31,6 +32,30 @@ class AdminCommands(commands.Cog):
             colour=int(self.bot.config["embed-colours"]["default"], 16)
         ))
 
+    @commands.group(description="Updates channel ids for certain commands")
+    @commands.guild_only()
+    @commands.has_guild_permissions(administrator=True)
+    async def update(self, ctx):
+        """
+        This command updated channel ids for certain commands.
+        """
+        if ctx.invoked_subcommand is None:
+            raise customErrors.errors.SubCommandRequired()
+
+    @update.command(name="quote_channel",
+                    aliases=["qc"],
+                    description="Sets a quote channel for the quote command")
+    async def quote_channel(self, ctx: commands.context.Context, channel_id: int):
+        """
+        This command updated the quote channel for this server. You need to provide a channel id for the quote channel.
+        """
+        channel = self.bot.channel_ids
+        channel["quotes"][str(ctx.guild.id)] = channel_id
+        await ctx.channel.send(embed=discord.Embed(
+            title=f"Quote channel id has been set to {channel_id}."
+        ))
+        async with asyncio.Lock():
+            json_helper.write_json("channel", channel)
 
 
 def setup(bot):
