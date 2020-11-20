@@ -45,17 +45,17 @@ class AdminCommands(commands.Cog):
     @update.command(name="quote_channel",
                     aliases=["qc"],
                     description="Sets a quote channel for the quote command")
-    async def quote_channel(self, ctx: commands.context.Context, channel_id: int):
+    async def quote_channel(self, ctx: commands.context.Context, channel: discord.TextChannel):
         """
         This command updated the quote channel for this server. You need to provide a channel id for the quote channel.
         """
-        channel = self.bot.channel_ids
-        channel["quotes"][str(ctx.guild.id)] = channel_id
+        channel_ids = self.bot.channel_ids
+        channel_ids["quotes"][str(ctx.guild.id)] = channel.id
         await ctx.channel.send(embed=discord.Embed(
-            title=f"Quote channel id has been set to {channel_id}."
+            title=f"I have updated the quote channel to \"{channel.name}\" ({channel.id})!"
         ))
         async with asyncio.Lock():
-            json_helper.write_json("channel", channel)
+            json_helper.write_json("channel", channel_ids)
 
 
 def setup(bot):

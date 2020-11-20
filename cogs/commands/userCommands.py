@@ -218,7 +218,9 @@ class UserCommands(commands.Cog):
 
         # quote channel is not setup
         if not str(guild_id) in quote_channels:
-            embed.title = "Channel does not exist!"
+            embed.title = "The quote channel has not been set up yet."
+            embed.colour = int(self.bot.config["embed-colours"]["warning"], 16)
+            embed.description = f"Use `{ctx.prefix}update quote_channel <channel>` to setup the quote channel for this server!"
             await ctx.channel.send(embed=embed)
             return
 
@@ -226,7 +228,9 @@ class UserCommands(commands.Cog):
 
         # check if the quote channel is a valid channel
         if not quote_channel:
-            embed.title = "Quote channel is invalid!"
+            embed.title = "The quote channel is invalid!"
+            embed.colour = int(self.bot.config["embed-colours"]["error"], 16)
+            embed.description = f"Use `{ctx.prefix}update quote_channel <channel>` to setup the quote channel for this server!"
             await ctx.channel.send(embed=embed)
             return
 
