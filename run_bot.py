@@ -19,4 +19,4 @@ logger.addHandler(handler)
 
 if __name__ == "__main__":
     bot = MyBot()
-    bot.run(json_helper.read_json("config")["token"]["discord"])
+    bot.run(json_helper.read_json("token")["discord"])

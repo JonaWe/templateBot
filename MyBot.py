@@ -30,6 +30,7 @@ class MyBot(commands.Bot):
     cwd = str(Path(__file__).parent)
     emoji = {"repeat": "\U0001F501"}
     config = json_helper.read_json("config")
+    token = json_helper.read_json("token")
     active_games = {}
 
 
