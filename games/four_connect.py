@@ -10,7 +10,7 @@ class Game:
         self.board = np.zeros((6, 7), dtype=int)
         self.current_player = randrange(1, 3)
 
-    def add_chip(self, player: int, column: int):
+    def add_coin(self, player: int, column: int):
         if self.current_player == player:
             for row in range(5, -1, -1):
                 if self.board[row][column] == 0:

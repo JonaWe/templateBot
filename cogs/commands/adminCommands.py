@@ -52,6 +52,7 @@ class AdminCommands(commands.Cog):
         channel_ids = self.bot.channel_ids
         channel_ids["quotes"][str(ctx.guild.id)] = channel.id
         await ctx.channel.send(embed=discord.Embed(
+            colour=int(self.bot.config["embed-colours"]["default"], 16),
             title=f"I have updated the quote channel to \"{channel.name}\" ({channel.id})!"
         ))
         async with asyncio.Lock():
