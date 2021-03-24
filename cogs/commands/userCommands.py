@@ -1,3 +1,4 @@
+import time
 import discord
 from discord.ext import commands
 from platform import python_version
@@ -22,24 +23,40 @@ class UserCommands(commands.Cog):
         With this command you can manage your four connect game.
         """
         if ctx.invoked_subcommand is None:
-            raise customErrors.errors.SubCommandRequired()
+            await self.start(ctx)
 
     @fourconnent.command(description="Ends a four connect game",
-                         aliases=["e", "stop", "exit"])
+                         aliases=["e", "stop", "exit", "quit", "leave"])
     async def end(self, ctx: commands.context.Context):
         """
         This commands ends your current four connect game.
         """
         if f"{ctx.author.id}" in self.bot.active_games:
-            await ctx.send(embed=discord.Embed(
-                colour=int(self.bot.config["embed-colours"]["default"], 16),
-                title="I have stopped your four connect game!"
-            ))
-            self.bot.active_games.pop(str(ctx.author.id))
+
+            active_game = self.bot.active_games.get(str(ctx.author.id))
+
+            game = active_game["game"]
+
+            embed = discord.Embed()
+            embed.title = "Connect Four"
+            embed.description = f"{active_game['player'].mention} (:yellow_circle:) vs {active_game['enemy'].mention} (:red_circle:)\n\uFEFF\n{game.to_embed_string()}"
+            embed.colour = int(self.bot.config["embed-colours"]["default"], 16)
+
+            if ctx.author.id == active_game["player"].id:
+                embed.add_field(name="Winner _(opponent quit)_", value=active_game["enemy"].display_name)
+            else:
+                embed.add_field(name="Winner _(opponent quit)_", value=active_game["player"].display_name)
+
+            end = int(round(time.time() * 1000))
+            secs = int(round((end - int(active_game["started"])) / 1000))
+            embed.set_footer(text=f"This game took {secs} seconds to finish.")
+            await active_game["message"].edit(embed=embed)
+            await active_game["message"].clear_reactions()
+            self.bot.active_games.pop(str(active_game["player"].id))
         else:
             await ctx.send(embed=discord.Embed(
                 colour=int(self.bot.config["embed-colours"]["warning"], 16),
-                title="You are not playing four connect!"
+                title="You don't have an active connect four game running!"
             ))
 
 
@@ -68,7 +85,7 @@ class UserCommands(commands.Cog):
 
         game = four_connect.Game()
         embed = discord.Embed()
-        embed.title = f"Four Connect Game"
+        embed.title = "Connect Four"
         embed.description = f"{ctx.author.mention} has challenged {user.mention} to play four connect."
         embed.set_footer(text="Reply with the checkmark to accept the game invite.")
         embed.colour = int(self.bot.config["embed-colours"]["default"], 16)
@@ -76,6 +93,7 @@ class UserCommands(commands.Cog):
         message = await ctx.send(embed=embed, content=str(user.mention))
 
         await message.add_reaction("\U00002705")
+        await message.add_reaction("\U0000274c")
 
         self.bot.active_games[f"{ctx.author.id}"] = {
             "accepted": False,
@@ -203,6 +221,32 @@ class UserCommands(commands.Cog):
         """
         await ctx.send(self.bot.config["bot-invite-link"])
 
+    @commands.command(name="multiquote",
+                      aliases=["mq"],
+                      description="Quotes a Conversaton user.")
+    async def multi_quote(self, ctx : commands.context.Context, *, quote):
+        splitted = quote.split('\"')
+
+        print(splitted)
+
+        #if splitted[:1] != "":
+        #    print("Error 1")
+        splitted = splitted[1:]
+        quotes = []
+
+        print(splitted)
+
+        while len(splitted) > 1:
+            quote = splitted[:1]
+            author = splitted[:2]
+            quotes.append((author, quote))
+            splitted = splitted[2:]
+
+        for a, q in quotes:
+            print(a, q)
+
+
+
 
     @commands.command(name="quote",
                       aliases=["q"],
@@ -247,7 +291,8 @@ class UserCommands(commands.Cog):
 
     @commands.command(name='test',
                       ignore_extra=False,
-                      aliases=['t'])
+                      aliases=['t'],
+                      hidden=True)
     @commands.cooldown(1, 75, commands.BucketType.user)
     @commands.bot_has_guild_permissions(administrator=True, kick_members=True, ban_members=True, manage_roles=True)
     async def test(self, ctx: discord.ext.commands.context.Context):

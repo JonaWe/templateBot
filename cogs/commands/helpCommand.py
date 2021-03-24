@@ -80,9 +80,9 @@ class Help(commands.Cog):
                     command_desc = f" - *{command.description}*" if command.description else ""
 
                     command_list += f"`{ctx.prefix}{command.name}`{command_desc}\n"
-
-                command_list += "\uFEFF"
-                embed.add_field(name=c, value=command_list, inline=False)
+                if command_list != "":
+                    command_list += "\uFEFF"
+                    embed.add_field(name=c, value=command_list, inline=False)
 
             embed.add_field(name="\uFEFF", value=f"Use `{ctx.prefix}help <command>` to get more information about a command.")
 

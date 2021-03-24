@@ -80,15 +80,17 @@ class Game:
     def to_embed_string(self):
         out = ""
         for row in range(6):
+            first = ""
+            second = ""
             for col in range(7):
                 if self.board[row][col] == 1:
-                    out += " :yellow_circle: \uFEFF"
+                    first += ":yellow_circle:"
                 elif self.board[row][col] == 2:
-                    out += " :red_circle: \uFEFF"
+                    first += ":red_circle:"
                 else:
-                    out += " :black_circle: \uFEFF"
-            out += "\n"
-        return out + ":one: \uFEFF :two: \uFEFF :three: \uFEFF :four: \uFEFF :five: \uFEFF :six: \uFEFF :seven:"
+                    first += ":black_circle:"
+            out += first + "\n" + second
+        return out + ":one:\uFEFF:two:\uFEFF:three:\uFEFF:four:\uFEFF:five:\uFEFF:six:\uFEFF:seven:"
 
 
 
