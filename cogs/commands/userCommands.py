@@ -1,5 +1,6 @@
 import time
 import discord
+import random
 from discord.ext import commands
 from platform import python_version
 from games import four_connect
@@ -288,6 +289,62 @@ class UserCommands(commands.Cog):
 
         await quote_channel.send(embed=embed)
 
+    @commands.command(name="shuffle",
+                      aliases=["random-teams"],
+                      description="Creates random teams!")
+    @commands.guild_only()
+    @commands.cooldown(1, 30, type=commands.BucketType.guild)
+    @commands.bot_has_guild_permissions(move_members=True)
+    @commands.has_guild_permissions(move_members=True)
+    async def shuffle(self, ctx: commands.context.Context, channel_1: discord.VoiceChannel, channel_2: discord.VoiceChannel):
+        if not ctx.author.voice:
+            embed = discord.Embed(
+                title="You are not connected to a voice channel!",
+                description="In order to execute this command you need to be connected to a voice channel.",
+                colour=int(self.bot.config["embed-colours"]["warning"], 16)
+            )
+            await ctx.send(embed=embed)
+            return
+
+        members_in_source = ctx.author.voice.channel.members
+
+        if len(members_in_source) < 2:
+            embed = discord.Embed(
+                title="There is a minimum of two users required to create a teams!",
+                description=f"Only the users in `{ctx.author.voice.channel.name}` will be counted in.",
+                colour=int(self.bot.config["embed-colours"]["warning"], 16)
+            )
+            await ctx.send(embed=embed)
+            return
+
+        # shuffling the members in source channel
+        random.shuffle(members_in_source)
+
+        # splitting the members of the source channel in 2 lists
+        team1_members = members_in_source[len(members_in_source) // 2:]
+        team2_members = members_in_source[:len(members_in_source) // 2]
+
+        for user in team1_members:
+            await user.move_to(channel_1)
+
+        for user in team2_members:
+            await user.move_to(channel_2)
+
+        for i in range(len(team1_members)):
+            team1_members[i] = team1_members[i].mention
+
+        for i in range(len(team2_members)):
+            team2_members[i] = team2_members[i].mention
+
+        embed = discord.Embed(
+            title="Random teams have been created!",
+            description=f"I have collected **{len(members_in_source)}** users from `{ctx.author.voice.channel.name}` and put them into random teams!",
+            colour=int(self.bot.config["embed-colours"]["default"], 16)
+        )
+        embed.add_field(name=f"Team 1 `({channel_1.name})`", value='\n'.join(team1_members))
+        embed.add_field(name=f"Team 2 `({channel_2.name})`", value='\n'.join(team2_members))
+
+        await ctx.send(embed=embed)
 
     @commands.command(name='test',
                       ignore_extra=False,
