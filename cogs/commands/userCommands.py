@@ -5,7 +5,6 @@ from discord.ext import commands
 from platform import python_version
 from games import four_connect
 import customErrors
-import embed_helper
 
 
 class UserCommands(commands.Cog):
@@ -122,13 +121,33 @@ class UserCommands(commands.Cog):
     @commands.command(aliases=['flip', 'coinflip', 'cf'],
                       ignore_extra=False,
                       description="Flips a coin")
-    async def coin(self, ctx: discord.ext.commands.context.Context):
+    async def coin(self, ctx: commands.context.Context):
         """
         Flips a coin with the result heads or tails
         """
-        if ctx.message.guild:
-            await ctx.message.delete()
-        await embed_helper.send_coin_flip_embed(ctx.author, ctx, self.bot)
+        message: discord.Message = await ctx.channel.send(embed=self.coin_embed(self.bot, ctx))
+
+        async def reroll(reaction: discord.Reaction, user: discord.User):
+            await reaction.remove(user)
+            if user != ctx.message.author:
+                return
+
+            await message.edit(embed=self.coin_embed(self.bot, ctx))
+
+        await self.bot.add_reaction_listener(reroll, message, '🔁', add_reaction=True)
+
+    @staticmethod
+    def coin_embed(bot, ctx):
+        result = random.choice(['HEADS', 'TAILS'])
+        embed = discord.Embed(
+            colour=int(bot.config["embed-colours"]["default"], 16),
+            title=f"Coin has been flipped!",
+            description=f"\uFEFF\n**{result}**\n\uFEFF"
+        )
+
+        embed.set_author(name=f"{ctx.author.name} requested a coinflip", icon_url=ctx.author.avatar_url)
+        embed.set_footer(text="You can flip again by clicking the repeat reaction", icon_url=bot.user.avatar_url)
+        return embed
 
     #endregion
 
@@ -177,8 +196,7 @@ class UserCommands(commands.Cog):
         """
         Rolls a dice from 1-6. If you add a number after the command you can set the dice range.
         """
-        if ctx.message.guild:
-            await ctx.message.delete()
+        max_value= 0
         if number:
             if number[0].isnumeric():
                 max_value = int(number[0])
@@ -186,7 +204,31 @@ class UserCommands(commands.Cog):
                 raise discord.ext.commands.BadArgument("Number expected")
         else:
             max_value = 6
-        await embed_helper.send_roll_dice_embed(ctx.author, ctx, self.bot, max_value)
+
+        message: discord.Message = await ctx.channel.send(embed=self.dice_embed(self.bot, ctx, max_value=max_value))
+
+        async def reroll(reaction: discord.Reaction, user: discord.User):
+            await reaction.remove(user)
+            if user != ctx.message.author:
+                return
+
+            await message.edit(embed=self.dice_embed(self.bot, ctx, max_value=max_value))
+
+        await self.bot.add_reaction_listener(reroll, message, '🔁', add_reaction=True)
+
+
+    @staticmethod
+    def dice_embed(bot, ctx, max_value=6):
+        embed = discord.Embed(colour=int(bot.config["embed-colours"]["default"], 16))
+
+        embed.set_author(name=f"{ctx.author.name} requested a diceroll", icon_url=ctx.author.avatar_url)
+        embed.title = f"Rolling the dice!"
+        embed.description = f"\uFEFF\n**{random.randint(1, max_value)}**\n\uFEFF"
+        if max_value != 6:
+            embed.add_field(name="Custom max value", value=str(max_value))
+        embed.set_footer(text="You can roll again by clicking the repeat reaction", icon_url=bot.user.avatar_url)
+
+        return embed
 
     #endregion
 
@@ -378,6 +420,7 @@ class UserCommands(commands.Cog):
 
         async def reroll_teams(reaction: discord.Reaction, user: discord.User):
             if user != ctx.message.author:
+                await reaction.remove(user)
                 return
 
             embed = await shuffle_teams()
