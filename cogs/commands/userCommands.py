@@ -1,3 +1,4 @@
+import asyncio
 import time
 import discord
 import random
@@ -438,8 +439,7 @@ class UserCommands(commands.Cog):
 
     @staticmethod
     async def move_users_into_channel(users: list, channel: discord.VoiceChannel):
-        for user in users:
-            await user.move_to(channel)
+        await asyncio.gather(*[user.move_to(channel) for user in users])
 
     @staticmethod
     def mention_all_users(users: list):
