@@ -1,8 +1,8 @@
 import datetime
 import json
-import discord
+
 import aiohttp
-import string
+import discord
 from discord.ext import commands
 
 
@@ -14,12 +14,12 @@ class FunCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    #region Dad-Joke Command
+    # region Dad-Joke Command
 
     @commands.command(name="dad-joke",
                       aliases=["dadjoke", "dad"],
                       description="Tells you a random dad joke.")
-    async def dad_joke(self, ctx : commands.context.Context):
+    async def dad_joke(self, ctx: commands.context.Context):
         joke = await self.get_dad_joke()
         while len(joke) > 255:
             joke = await self.get_dad_joke()
@@ -39,14 +39,14 @@ class FunCommands(commands.Cog):
             async with session.get(url) as response:
                 return await response.text()
 
-    #endregion
+    # endregion
 
-    #region Yo-Mama-Joke Command
+    # region Yo-Mama-Joke Command
 
     @commands.command(name="yo-mama",
                       aliases=["yomoma", "mom"],
                       description="Tells you a random yomomma joke.")
-    async def mom_joke(self, ctx : commands.context.Context):
+    async def mom_joke(self, ctx: commands.context.Context):
         joke = await self.get_mom_joke()
         while len(joke) > 255:
             joke = await self.get_mom_joke()
@@ -59,14 +59,14 @@ class FunCommands(commands.Cog):
         embed.set_footer(text=f"This yomomma joke was requested by {ctx.author.name}!")
         await ctx.send(embed=embed)
 
-
     async def get_mom_joke(self):
         url = "https://api.yomomma.info/"
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 return json.loads(await response.text()).get("joke")
 
-    #endregion
+    # endregion
+
 
 def setup(bot):
     bot.add_cog(FunCommands(bot))

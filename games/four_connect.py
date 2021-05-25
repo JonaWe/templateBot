@@ -1,7 +1,5 @@
 from random import randrange
 
-from random import randrange
-import copy
 import numpy as np
 
 
@@ -26,7 +24,7 @@ class Game:
         # horizontal
         for row in range(6):
             for col in range(7 - 3):
-                if self.board[row][col] != 0\
+                if self.board[row][col] != 0 \
                         and self.board[row][col] == self.board[row][col + 1] \
                         and self.board[row][col + 1] == self.board[row][col + 2] \
                         and self.board[row][col + 2] == self.board[row][col + 3]:
@@ -35,7 +33,7 @@ class Game:
         # vertical
         for row in range(6 - 3):
             for col in range(7):
-                if self.board[row][col] != 0\
+                if self.board[row][col] != 0 \
                         and self.board[row][col] == self.board[row + 1][col] \
                         and self.board[row + 1][col] == self.board[row + 2][col] \
                         and self.board[row + 2][col] == self.board[row + 3][col]:
@@ -44,7 +42,7 @@ class Game:
         # positive diagonal
         for row in range(6 - 3):
             for col in range(7 - 3):
-                if self.board[row][col] != 0\
+                if self.board[row][col] != 0 \
                         and self.board[row][col] == self.board[row + 1][col + 1] \
                         and self.board[row + 1][col + 1] == self.board[row + 2][col + 2] \
                         and self.board[row + 2][col + 2] == self.board[row + 3][col + 3]:
@@ -91,7 +89,6 @@ class Game:
                     first += ":black_circle:"
             out += first + "\n" + second
         return out + ":one:\uFEFF:two:\uFEFF:three:\uFEFF:four:\uFEFF:five:\uFEFF:six:\uFEFF:seven:"
-
 
 
 if __name__ == "__main__":

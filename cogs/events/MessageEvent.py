@@ -1,6 +1,6 @@
 import discord
-from discord.ext import commands
 from better_profanity import profanity
+from discord.ext import commands
 
 
 class MessageEvent(commands.Cog):

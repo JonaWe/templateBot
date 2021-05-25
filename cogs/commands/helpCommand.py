@@ -3,6 +3,7 @@ import os
 import discord
 from discord.ext import commands
 from humanfriendly import format_timespan
+
 import customErrors.errors
 
 
@@ -27,7 +28,7 @@ class Help(commands.Cog):
 
         # check if the command argument is empty
         # -> opening the global help page
-        if command  == "":
+        if command == "":
             embed = discord.Embed(colour=int(self.bot.config["embed-colours"]["default"], 16))
 
             embed.title = "Available commands!"
@@ -84,7 +85,8 @@ class Help(commands.Cog):
                     command_list += "\uFEFF"
                     embed.add_field(name=c, value=command_list, inline=False)
 
-            embed.add_field(name="\uFEFF", value=f"Use `{ctx.prefix}help <command>` to get more information about a command.")
+            embed.add_field(name="\uFEFF",
+                            value=f"Use `{ctx.prefix}help <command>` to get more information about a command.")
 
             # sending the help message and ending the function
             await ctx.send(embed=embed)

@@ -1,18 +1,19 @@
 import asyncio
 import os
+import string
 import unicodedata
-
-import youtube_dl
+from json import loads
 
 import discord
+import youtube_dl
 from discord.ext import commands
+
 import customErrors.errors
-from json import loads
 import json_helper
-import string
 
 valid_filename_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
 char_limit = 255
+
 
 def clean_filename(filename, whitelist=valid_filename_chars, replace=' '):
     # replace spaces
@@ -26,6 +27,7 @@ def clean_filename(filename, whitelist=valid_filename_chars, replace=' '):
     cleaned_filename = ''.join(c for c in cleaned_filename if c in whitelist)
     return cleaned_filename[:char_limit]
 
+
 class OwnerCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -34,7 +36,7 @@ class OwnerCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    #region YouTube-To-mp3 Command
+    # region YouTube-To-mp3 Command
 
     @commands.command(name="yt2mp3",
                       aliases=["yt"],
@@ -67,9 +69,9 @@ class OwnerCommands(commands.Cog):
 
             await ctx.send(file=discord.File(f"yt_downloads/{filename}.mp3"))
 
-    #endregion
+    # endregion
 
-    #region Devmode Commands
+    # region Devmode Commands
 
     @commands.group(description="Turning the devmode on an off",
                     aliases=["dm", "d"])
@@ -126,9 +128,9 @@ class OwnerCommands(commands.Cog):
             embed.description = "```diff\n- Devmode is currently turned off```"
         await ctx.send(embed=embed)
 
-    #endregion
+    # endregion
 
-    #region Blacklist Commands
+    # region Blacklist Commands
 
     @commands.group(description="Manage the blacklist")
     @commands.is_owner()
@@ -188,9 +190,9 @@ class OwnerCommands(commands.Cog):
             colour=int(self.bot.config["embed-colours"]["default"], 16)
         ))
 
-    #endregion
+    # endregion
 
-    #region Config Commands
+    # region Config Commands
 
     @commands.group(description="Manage the config",
                     aliases=["c"])
@@ -201,7 +203,6 @@ class OwnerCommands(commands.Cog):
         """
         if ctx.invoked_subcommand is None:
             raise customErrors.errors.SubCommandRequired()
-
 
     @config.command(description="Updating values in the config",
                     aliases=['u'])
@@ -251,9 +252,9 @@ class OwnerCommands(commands.Cog):
             colour=int(self.bot.config["embed-colours"]["default"], 16)
         ))
 
-    #endregion
+    # endregion
 
-    #region HexToInt Command
+    # region HexToInt Command
 
     @commands.command(description="Converts hex to integer",
                       aliases=['hti'])
@@ -268,9 +269,9 @@ class OwnerCommands(commands.Cog):
         except:
             raise commands.BadArgument()
 
-    #endregion
+    # endregion
 
-    #region Reload Command
+    # region Reload Command
 
     @commands.is_owner()
     @commands.command(description="Reloads COGs",
@@ -312,7 +313,7 @@ class OwnerCommands(commands.Cog):
         # reloads all cogs
         else:
             embed = discord.Embed(
-                title="Reloading all cogs",colour=int(self.bot.config["embed-colours"]["default"], 16))
+                title="Reloading all cogs", colour=int(self.bot.config["embed-colours"]["default"], 16))
             cog_types = ["events", "commands", "tasks"]
             successful_cogs = ""
             failed_cogs = ""
@@ -334,7 +335,8 @@ class OwnerCommands(commands.Cog):
 
             await ctx.send(embed=embed)
 
-    #endregion
+    # endregion
+
 
 def setup(bot):
     bot.add_cog(OwnerCommands(bot))

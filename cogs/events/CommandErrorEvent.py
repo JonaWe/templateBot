@@ -1,8 +1,8 @@
 import discord
-from discord import errors
 from discord.ext import commands
-import customErrors.errors
 from humanfriendly import format_timespan
+
+import customErrors.errors
 
 
 class CommandErrorEvent(commands.Cog):
@@ -180,7 +180,6 @@ class CommandErrorEvent(commands.Cog):
                     embed.add_field(name="\uFEFF",
                                     value=f"Use `{ctx.prefix}help {ctx.command}` for more information about this command.")
                     await ctx.send(embed=embed)
-
 
         raise error
 

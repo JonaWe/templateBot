@@ -16,10 +16,11 @@ class PresenceTask(commands.Cog):
 
     @tasks.loop(seconds=10.0)
     async def update_status(self):
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                 name=f"{self.bot.total_server} servers "
-                                                                      f"| {self.bot.config['default-prefix']}help to start!"),
-                                       status=discord.Status.online)
+        await self.bot.change_presence(activity=discord.Activity(
+            type=discord.ActivityType.watching,
+            name=f"{self.bot.total_server} servers "
+                 f"| {self.bot.config['default-prefix']}help to start!"),
+            status=discord.Status.online)
 
     @update_status.before_loop
     async def wait_function(self):

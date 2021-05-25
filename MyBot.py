@@ -1,7 +1,9 @@
-import discord
-from discord.ext import commands
 import os
 from pathlib import Path
+
+import discord
+from discord.ext import commands
+
 import json_helper
 
 
@@ -17,6 +19,7 @@ def get_code_lines(cwd=json_helper.get_cwd()):
                 lines += get_code_lines(cwd=f"{cwd}/{file}")
 
     return lines
+
 
 class MyBot(commands.Bot):
     __version__ = 1.0
@@ -34,7 +37,6 @@ class MyBot(commands.Bot):
     active_games = {}
     reaction_listener = []
 
-
     def get_my_prefix(self, bot, ctx):
         if ctx.guild:
             prefix = json_helper.get_prefix(ctx.guild.id, bot)
@@ -44,7 +46,7 @@ class MyBot(commands.Bot):
 
     def __init__(self):
         intents = discord.Intents.default()
-        intents.presences = True
+        intents.presences = False
         intents.typing = False
         intents.members = True
 
@@ -60,7 +62,8 @@ class MyBot(commands.Bot):
 
         super().run(t)
 
-    async def add_reaction_listener(self, listener_function, message: discord.Message, emoji: str=None, add_reaction: bool=False, remove_reactions: bool=True):
+    async def add_reaction_listener(self, listener_function, message: discord.Message, emoji: str = None,
+                                    add_reaction: bool = False, remove_reactions: bool = True):
 
         async def listener(reaction: discord.Reaction, user: discord.User):
             if reaction.message.id != message.id:
@@ -70,8 +73,6 @@ class MyBot(commands.Bot):
                 if remove_reactions:
                     await reaction.remove(user)
                 return
-
-
 
             await listener_function(reaction, user)
 
@@ -109,9 +110,11 @@ class MyBot(commands.Bot):
                     if isinstance(message.channel, discord.TextChannel):
                         pref = json_helper.get_prefix(message.guild.id, self)
                         if message.content.startswith(pref):
-                            await message.channel.send("```diff\n- The developer only mode is currently turned on! Therefore I will only process messages form the developer(s) of this bot.```")
+                            await message.channel.send(
+                                "```diff\n- The developer only mode is currently turned on! Therefore I will only process messages form the developer(s) of this bot.```")
                     else:
-                        await message.channel.send("```diff\n- The developer only mode is currently turned on! Therefore I will only process messages form the developer(s) of this bot.```")
+                        await message.channel.send(
+                            "```diff\n- The developer only mode is currently turned on! Therefore I will only process messages form the developer(s) of this bot.```")
                 return False
         return True
 

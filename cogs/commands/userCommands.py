@@ -1,11 +1,12 @@
 import asyncio
-import time
-import discord
 import random
-from discord.ext import commands
+import time
 from platform import python_version
+
+import discord
+from discord.ext import commands
+
 from games import four_connect
-import customErrors
 
 
 class UserCommands(commands.Cog):
@@ -16,10 +17,10 @@ class UserCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    #region Four-Connect Game
+    # region Four-Connect Game
 
     @commands.group(description="Managing a four connect game",
-                      aliases=["fc"])
+                    aliases=["fc"])
     @commands.guild_only()
     async def fourconnent(self, ctx):
         """
@@ -28,7 +29,7 @@ class UserCommands(commands.Cog):
         if ctx.invoked_subcommand is None:
             await self.start(ctx)
 
-    #region End
+    # region End
 
     @fourconnent.command(description="Ends a four connect game",
                          aliases=["e", "stop", "exit", "quit", "leave"])
@@ -64,12 +65,12 @@ class UserCommands(commands.Cog):
                 title="You don't have an active connect four game running!"
             ))
 
-    #endregion
+    # endregion
 
-    #region Start
+    # region Start
 
     @fourconnent.command(description="Starts a four connect game",
-                      aliases=["s"])
+                         aliases=["s"])
     async def start(self, ctx: commands.context.Context, user: discord.Member):
         """
         This command creates a new four connect game between you and another given user.
@@ -89,7 +90,6 @@ class UserCommands(commands.Cog):
                 title="You already have a game in progress!"
             ))
             return
-
 
         game = four_connect.Game()
         embed = discord.Embed()
@@ -113,11 +113,11 @@ class UserCommands(commands.Cog):
             "message": message
         }
 
-    #endregion
+    # endregion
 
-    #endregion
+    # endregion
 
-    #region Coin Command
+    # region Coin Command
 
     @commands.command(aliases=['flip', 'coinflip', 'cf'],
                       ignore_extra=False,
@@ -150,9 +150,9 @@ class UserCommands(commands.Cog):
         embed.set_footer(text="You can flip again by clicking the repeat reaction", icon_url=bot.user.avatar_url)
         return embed
 
-    #endregion
+    # endregion
 
-    #region Stats Command
+    # region Stats Command
 
     @commands.command(aliases=['botinfo', 'info'],
                       description="Displays information about this bot")
@@ -173,7 +173,8 @@ class UserCommands(commands.Cog):
             for o in owner:
                 mention_owners += f"<@{o}>\n"
 
-        embed = discord.Embed(colour=int(self.bot.config["embed-colours"]["default"], 16), title=f"{self.bot.user.name} Stats", description="\uFEFF")
+        embed = discord.Embed(colour=int(self.bot.config["embed-colours"]["default"], 16),
+                              title=f"{self.bot.user.name} Stats", description="\uFEFF")
 
         embed.add_field(name="Total Servers", value=str(self.bot.total_server))
         embed.add_field(name="Total Users", value=str(self.bot.total_user))
@@ -187,9 +188,9 @@ class UserCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    #endregion
+    # endregion
 
-    #region Dice Command
+    # region Dice Command
 
     @commands.command(aliases=['roll dice', 'roll', 'rtd'],
                       description="Rolls a dice")
@@ -197,7 +198,7 @@ class UserCommands(commands.Cog):
         """
         Rolls a dice from 1-6. If you add a number after the command you can set the dice range.
         """
-        max_value= 0
+        max_value = 0
         if number:
             if number[0].isnumeric():
                 max_value = int(number[0])
@@ -217,7 +218,6 @@ class UserCommands(commands.Cog):
 
         await self.bot.add_reaction_listener(reroll, message, '🔁', add_reaction=True)
 
-
     @staticmethod
     def dice_embed(bot, ctx, max_value=6):
         embed = discord.Embed(colour=int(bot.config["embed-colours"]["default"], 16))
@@ -231,9 +231,9 @@ class UserCommands(commands.Cog):
 
         return embed
 
-    #endregion
+    # endregion
 
-    #region Wipe Command
+    # region Wipe Command
 
     @commands.command(description="Wipes messages in a channel")
     @commands.guild_only()
@@ -250,9 +250,9 @@ class UserCommands(commands.Cog):
         embed.set_footer(text="This message will delete itself after 15 seconds!")
         await ctx.send(embed=embed, delete_after=15)
 
-    #endregion
+    # endregion
 
-    #region Member Command
+    # region Member Command
 
     @commands.command(description="Info about a member")
     @commands.guild_only()
@@ -281,9 +281,9 @@ class UserCommands(commands.Cog):
         embed.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed=embed)
 
-    #endregion
+    # endregion
 
-    #region Invite Command
+    # region Invite Command
 
     @commands.command(description="Sends bot invite link",
                       ignore_extra=False)
@@ -294,19 +294,19 @@ class UserCommands(commands.Cog):
         """
         await ctx.send(self.bot.config["bot-invite-link"])
 
-    #endregion C
+    # endregion C
 
-    #region Multi-Quote Command
+    # region Multi-Quote Command
 
     @commands.command(name="multiquote",
                       aliases=["mq"],
                       description="Quotes a Conversaton user.")
-    async def multi_quote(self, ctx : commands.context.Context, *, quote):
+    async def multi_quote(self, ctx: commands.context.Context, *, quote):
         splitted = quote.split('\"')
 
         print(splitted)
 
-        #if splitted[:1] != "":
+        # if splitted[:1] != "":
         #    print("Error 1")
         splitted = splitted[1:]
         quotes = []
@@ -322,21 +322,21 @@ class UserCommands(commands.Cog):
         for a, q in quotes:
             print(a, q)
 
-    #endregion
+    # endregion
 
-    #region Quote Command
+    # region Quote Command
 
     @commands.command(name="quote",
                       aliases=["q"],
                       description="Quotes a user.")
-    async def quote(self, ctx: commands.context.Context, user:discord.Member, *, quote):
+    async def quote(self, ctx: commands.context.Context, user: discord.Member, *, quote):
         """
         This command can be used to quote users. This command only works if a quote channel has been setup. You can setup a quote channel using the command: update quote_channel
         """
         quote_channels = self.bot.channel_ids["quotes"]
         guild_id = ctx.guild.id
 
-        embed =discord.Embed()
+        embed = discord.Embed()
 
         # quote channel is not setup
         if not str(guild_id) in quote_channels:
@@ -366,9 +366,9 @@ class UserCommands(commands.Cog):
 
         await quote_channel.send(embed=embed)
 
-    #endregion
+    # endregion
 
-    #region Shuffle Command
+    # region Shuffle Command
 
     @commands.command(name="shuffle",
                       aliases=["random-teams"],
@@ -377,7 +377,8 @@ class UserCommands(commands.Cog):
     @commands.cooldown(1, 30, type=commands.BucketType.guild)
     @commands.bot_has_guild_permissions(move_members=True)
     @commands.has_guild_permissions(move_members=True)
-    async def shuffle(self, ctx: commands.context.Context, channel_1: discord.VoiceChannel, channel_2: discord.VoiceChannel):
+    async def shuffle(self, ctx: commands.context.Context, channel_1: discord.VoiceChannel,
+                      channel_2: discord.VoiceChannel):
         if not ctx.author.voice:
             embed = discord.Embed(
                 title="You are not connected to a voice channel!",
@@ -397,6 +398,7 @@ class UserCommands(commands.Cog):
             )
             await ctx.send(embed=embed)
             return
+
         async def shuffle_teams():
             team1, team2 = self.split_list_into_two_lists(members_in_source)
 
@@ -448,9 +450,9 @@ class UserCommands(commands.Cog):
             output += user.mention + '\n'
         return output
 
-    #endregion
+    # endregion
 
-    #region Test Command
+    # region Test Command
     @commands.command(name='test',
                       ignore_extra=False,
                       aliases=['t'],
@@ -466,7 +468,8 @@ class UserCommands(commands.Cog):
 
         await self.bot.add_reaction_listener(test, message, '🙃', add_reaction=True)
 
-    #endregion
+    # endregion
+
 
 def setup(bot):
     bot.add_cog(UserCommands(bot))

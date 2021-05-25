@@ -1,7 +1,7 @@
+import time
+
 import discord
 from discord.ext import commands
-
-import time
 
 
 class ReactionEvent(commands.Cog):
@@ -34,13 +34,13 @@ class ReactionEvent(commands.Cog):
         for k, v in self.bot.active_games.items():
             if reaction.message.id == v["message"].id:
                 game_emojis = ["1\N{variation selector-16}\N{combining enclosing keycap}",
-                                               "2\N{variation selector-16}\N{combining enclosing keycap}",
-                                               "3\N{variation selector-16}\N{combining enclosing keycap}",
-                                               "4\N{variation selector-16}\N{combining enclosing keycap}",
-                                               "5\N{variation selector-16}\N{combining enclosing keycap}",
-                                               "6\N{variation selector-16}\N{combining enclosing keycap}",
-                                               "7\N{variation selector-16}\N{combining enclosing keycap}",
-                                               "\U0000274c"]
+                               "2\N{variation selector-16}\N{combining enclosing keycap}",
+                               "3\N{variation selector-16}\N{combining enclosing keycap}",
+                               "4\N{variation selector-16}\N{combining enclosing keycap}",
+                               "5\N{variation selector-16}\N{combining enclosing keycap}",
+                               "6\N{variation selector-16}\N{combining enclosing keycap}",
+                               "7\N{variation selector-16}\N{combining enclosing keycap}",
+                               "\U0000274c"]
                 if not v["accepted"]:
                     if user.id == v["enemy"].id and reaction.emoji == "\U00002705":
                         self.bot.total_executed_commands += 1
@@ -93,7 +93,7 @@ class ReactionEvent(commands.Cog):
                     if user.id == active_game["player"].id:
                         embed.colour = int("dd2e44", 16)
                         embed.add_field(name="Winner _(opponent quit)_", value=active_game["enemy"].display_name)
-                    else: # if user.id == active_game["enemy"].id:
+                    else:  # if user.id == active_game["enemy"].id:
                         embed.colour = int("fdcb58", 16)
                         embed.add_field(name="Winner _(opponent quit)_", value=active_game["player"].display_name)
 
@@ -108,7 +108,7 @@ class ReactionEvent(commands.Cog):
                     game = v["game"]
                     # reaction if from the player who is currently active
                     if game.current_player == 1 and user.id == v["player"].id \
-                        or game.current_player == 2 and user.id == v["enemy"].id:
+                            or game.current_player == 2 and user.id == v["enemy"].id:
                         self.bot.total_executed_commands += 1
                         embed = v["embed"]
                         message = v["message"]
@@ -127,8 +127,6 @@ class ReactionEvent(commands.Cog):
                                 cp = enemy.display_name
                             embed.clear_fields()
                             embed.add_field(name="Current Player", value=cp)
-
-
 
                             # checking for an game end
                             winner = game.check_for_win()
@@ -156,7 +154,6 @@ class ReactionEvent(commands.Cog):
                 # delete any other reactions
                 else:
                     await reaction.message.remove_reaction(reaction.emoji, user)
-
 
 
 def setup(bot):

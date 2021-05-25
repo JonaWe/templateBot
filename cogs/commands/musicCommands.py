@@ -1,11 +1,10 @@
 import asyncio
 
 import discord
-from discord.ext import commands
 import youtube_dl
+from discord.ext import commands
 
 youtube_dl.utils.bug_reports_message = lambda: ''
-
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -18,7 +17,7 @@ ytdl_format_options = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
+    'source_address': '0.0.0.0'  # bind to ipv4 since ipv6 addresses cause issues sometimes
 }
 
 ffmpeg_options = {
@@ -57,7 +56,7 @@ class MusicCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-    #region Play Command
+    # region Play Command
 
     @commands.command(name="play",
                       enabled=False,
@@ -66,13 +65,13 @@ class MusicCommands(commands.Cog):
     async def play_(self, ctx: commands.context.Context, *, url):
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-            ctx.voice_client.play(player)#, after=lambda e: print('Player error: %s' % e) if e else None)
+            ctx.voice_client.play(player)  # , after=lambda e: print('Player error: %s' % e) if e else None)
             self.players[ctx.guild.id] = ctx.voice_client
         await ctx.send(f"Now playing {player.title}")
 
-    #endregion
+    # endregion
 
-    #region Stop Command
+    # region Stop Command
 
     @commands.command(name="stop",
                       enabled=False,
@@ -84,9 +83,9 @@ class MusicCommands(commands.Cog):
             vc.stop()
             await ctx.send(f"Stopped playing")
 
-    #endregion
+    # endregion
 
-    #region Pause Command
+    # region Pause Command
 
     @commands.command(name="pause",
                       enabled=False,
@@ -98,9 +97,9 @@ class MusicCommands(commands.Cog):
             vc.pause()
             await ctx.send(f"Paused playing")
 
-    #endregion
+    # endregion
 
-    #region Resume Command
+    # region Resume Command
 
     @commands.command(name="resume",
                       enabled=False,
@@ -112,16 +111,16 @@ class MusicCommands(commands.Cog):
             vc.resume()
             await ctx.send(f"Resumed playing")
 
-    #endregion
+    # endregion
 
-    #region Connect Command
+    # region Connect Command
 
     @commands.command(name="connect",
                       enabled=False,
                       description="Connects the bot to a voice channel",
                       aliases=["join"])
     @commands.guild_only()
-    async def connect_(self, ctx: commands.context.Context, *, channel: discord.VoiceChannel=None):
+    async def connect_(self, ctx: commands.context.Context, *, channel: discord.VoiceChannel = None):
         if not channel:
             if ctx.author.voice.channel:
                 channel = ctx.author.voice.channel
@@ -143,9 +142,9 @@ class MusicCommands(commands.Cog):
 
         await ctx.send(f"Connected to {channel.name}")
 
-    #endregion
+    # endregion
 
-    #region Disconnect Command
+    # region Disconnect Command
 
     @commands.command(name="disconnect",
                       aliases=["leave"],
@@ -160,20 +159,20 @@ class MusicCommands(commands.Cog):
         else:
             await ctx.send("I am currently not connected to any channel")
 
-    #endregion
+    # endregion
 
-    #region Volume Command
+    # region Volume Command
 
     @commands.command(description="Changes the volume of the bot",
                       enabled=False)
     @commands.guild_only()
-    async def volume(self, ctx: commands.context.Context, level: int=50):
+    async def volume(self, ctx: commands.context.Context, level: int = 50):
         vc = ctx.voice_client
 
         if not vc:
             return await ctx.send("I am not connected to a voice channel right now.")
 
-        if not  0 < level < 101:
+        if not 0 < level < 101:
             return await ctx.send("Select a volume level between 0 and 100.")
 
         if vc.source:
@@ -182,7 +181,8 @@ class MusicCommands(commands.Cog):
 
             await ctx.send(f"Changed the volume to {level}%")
 
-    #endregion
+    # endregion
+
 
 def setup(bot):
     bot.add_cog(MusicCommands(bot))

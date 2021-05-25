@@ -1,6 +1,5 @@
 import asyncio
 
-import discord
 from discord.ext import tasks, commands
 
 import json_helper
