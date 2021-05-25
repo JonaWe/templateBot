@@ -64,8 +64,6 @@ class MyBot(commands.Bot):
 
         async def listener(reaction: discord.Reaction, user: discord.User):
             if reaction.message.id != message.id:
-                if remove_reactions:
-                    await reaction.remove(user)
                 return
 
             if emoji and reaction.emoji != emoji:
