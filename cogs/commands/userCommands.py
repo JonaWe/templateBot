@@ -354,35 +354,56 @@ class UserCommands(commands.Cog):
             )
             await ctx.send(embed=embed)
             return
+        async def shuffle_teams():
+            team1, team2 = self.split_list_into_two_lists(members_in_source)
 
-        # shuffling the members in source channel
-        random.shuffle(members_in_source)
+            await self.move_users_into_channel(team1, channel_1)
+            await self.move_users_into_channel(team2, channel_2)
 
-        # splitting the members of the source channel in 2 lists
-        team1_members = members_in_source[len(members_in_source) // 2:]
-        team2_members = members_in_source[:len(members_in_source) // 2]
+            team1_mentions = self.mention_all_users(team1)
+            team2_mentions = self.mention_all_users(team2)
 
-        for user in team1_members:
-            await user.move_to(channel_1)
+            embed = discord.Embed(
+                title="Random teams have been created!",
+                description=f"I have collected **{len(members_in_source)}** users from `{ctx.author.voice.channel.name}` and put them into random teams!",
+                colour=int(self.bot.config["embed-colours"]["default"], 16)
+            )
+            embed.add_field(name=f"Team 1 `({channel_1.name})`", value=team1_mentions)
+            embed.add_field(name=f"Team 2 `({channel_2.name})`", value=team2_mentions)
 
-        for user in team2_members:
-            await user.move_to(channel_2)
+            return embed
 
-        for i in range(len(team1_members)):
-            team1_members[i] = team1_members[i].mention
+        embed = await shuffle_teams()
+        message = await ctx.send(embed=embed)
 
-        for i in range(len(team2_members)):
-            team2_members[i] = team2_members[i].mention
+        async def reroll_teams(reaction: discord.Reaction, user: discord.User):
+            if user != ctx.message.author:
+                return
 
-        embed = discord.Embed(
-            title="Random teams have been created!",
-            description=f"I have collected **{len(members_in_source)}** users from `{ctx.author.voice.channel.name}` and put them into random teams!",
-            colour=int(self.bot.config["embed-colours"]["default"], 16)
-        )
-        embed.add_field(name=f"Team 1 `({channel_1.name})`", value='\n'.join(team1_members))
-        embed.add_field(name=f"Team 2 `({channel_2.name})`", value='\n'.join(team2_members))
+            embed = await shuffle_teams()
+            await message.edit(embed=embed)
+            await reaction.remove(user)
 
-        await ctx.send(embed=embed)
+        await self.bot.add_reaction_listener(reroll_teams, message, '🔁', add_reaction=True)
+
+    @staticmethod
+    def split_list_into_two_lists(l: list):
+        random.shuffle(l)
+        team1 = l[len(l) // 2:]
+        team2 = l[:len(l) // 2]
+        return team1, team2
+
+    @staticmethod
+    async def move_users_into_channel(users: list, channel: discord.VoiceChannel):
+        for user in users:
+            await user.move_to(channel)
+
+    @staticmethod
+    def mention_all_users(users: list):
+        output = ""
+        for user in users:
+            output += user.mention + '\n'
+        return output
 
     #endregion
 
