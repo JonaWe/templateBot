@@ -14,6 +14,8 @@ class SteamCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
+    #region Steamstats Command
+
     @commands.command(name="steamstats",
                       description="Displays stats about a steam user",
                       hidden=True)
@@ -56,8 +58,9 @@ class SteamCommands(commands.Cog):
 
                         await ctx.send(embed=embed)
 
+    #endregion
 
-
+    #region Csgostats Command
 
     @commands.command(name="csgostats",
                       description="Displays csgo stats for a csgo player",
@@ -68,6 +71,9 @@ class SteamCommands(commands.Cog):
         """
         pass
 
+    #endregion
+
+    #region Ruststats Command
 
     @commands.command(name="ruststats",
                       description="Displays rust stats for a rust player",
@@ -78,6 +84,7 @@ class SteamCommands(commands.Cog):
         """
         pass
 
+    #endregion
 
 def setup(bot):
     bot.add_cog(SteamCommands(bot))
