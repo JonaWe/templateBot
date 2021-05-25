@@ -30,7 +30,7 @@ class ReactionEvent(commands.Cog):
             return
 
         for listener in self.bot.reaction_listener:
-            await listener(reaction)
+            await listener(reaction, user)
 
         if reaction.emoji == self.bot.emoji["repeat"] and message.embeds:
             if message.embeds[0].title == "Flipping the coin!":

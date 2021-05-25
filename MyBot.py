@@ -10,7 +10,7 @@ def get_code_lines(cwd=json_helper.get_cwd()):
     for file in os.listdir(cwd):
         if file.endswith(".py"):
             # gets the number of lines in a single file
-            lines += sum(1 for line in open(f"{cwd}/{file}"))
+            lines += sum(1 for line in open(f"{cwd}/{file}", encoding="utf8"))
         elif not "." in file:
             # ignoring some paths
             if not file in ["venv", ".git", "__pycache__"]:
@@ -60,18 +60,22 @@ class MyBot(commands.Bot):
 
         super().run(t)
 
-    async def add_reaction_listener(self, listener_function, message: discord.Message, emoji: str = None, add_reaction: bool=False):
+    async def add_reaction_listener(self, listener_function, message: discord.Message, emoji: str=None, add_reaction: bool=False, remove_reactions: bool=True):
 
-        async def listener(reaction: discord.Reaction):
+        async def listener(reaction: discord.Reaction, user: discord.User):
             if reaction.message.id != message.id:
+                if remove_reactions:
+                    await reaction.remove(user)
                 return
 
             if emoji and reaction.emoji != emoji:
+                if remove_reactions:
+                    await reaction.remove(user)
                 return
 
 
 
-            await listener_function(reaction)
+            await listener_function(reaction, user)
 
         if emoji and add_reaction:
             await message.add_reaction(emoji)
