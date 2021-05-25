@@ -289,6 +289,8 @@ class UserCommands(commands.Cog):
 
         await quote_channel.send(embed=embed)
 
+    #region Shuffle
+
     @commands.command(name="shuffle",
                       aliases=["random-teams"],
                       description="Creates random teams!")
@@ -346,6 +348,8 @@ class UserCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    #endregion
+
     @commands.command(name='test',
                       ignore_extra=False,
                       aliases=['t'],
@@ -353,7 +357,13 @@ class UserCommands(commands.Cog):
     @commands.cooldown(1, 75, commands.BucketType.user)
     @commands.bot_has_guild_permissions(administrator=True, kick_members=True, ban_members=True, manage_roles=True)
     async def test(self, ctx: discord.ext.commands.context.Context):
-        await ctx.send("yooooo")
+        message = await ctx.send("yoooo")
+
+        async def test(reaction: discord.Reaction):
+            await message.edit(content='this works fine!')
+            print(reaction.emoji)
+
+        await self.bot.add_reaction_listener(test, message, '🙃', add_reaction=True)
 
 
 def setup(bot):

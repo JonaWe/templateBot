@@ -32,6 +32,7 @@ class MyBot(commands.Bot):
     config = json_helper.read_json("config")
     token = json_helper.read_json("token")
     active_games = {}
+    reaction_listener = []
 
 
     def get_my_prefix(self, bot, ctx):
@@ -58,6 +59,24 @@ class MyBot(commands.Bot):
                     self.load_extension(f"cogs.{cog_type}.{file[:-3]}")
 
         super().run(t)
+
+    async def add_reaction_listener(self, listener_function, message: discord.Message, emoji: str = None, add_reaction: bool=False):
+
+        async def listener(reaction: discord.Reaction):
+            if reaction.message.id != message.id:
+                return
+
+            if emoji and reaction.emoji != emoji:
+                return
+
+
+
+            await listener_function(reaction)
+
+        if emoji and add_reaction:
+            await message.add_reaction(emoji)
+
+        self.reaction_listener.append(listener)
 
     @commands.Cog.listener()
     async def on_ready(self):

@@ -29,6 +29,9 @@ class ReactionEvent(commands.Cog):
         if user.id in self.bot.blacklisted_users:
             return
 
+        for listener in self.bot.reaction_listener:
+            await listener(reaction)
+
         if reaction.emoji == self.bot.emoji["repeat"] and message.embeds:
             if message.embeds[0].title == "Flipping the coin!":
                 self.bot.total_executed_commands += 1
