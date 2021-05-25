@@ -16,6 +16,8 @@ class UserCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
+    #region Four-Connect Game
+
     @commands.group(description="Managing a four connect game",
                       aliases=["fc"])
     @commands.guild_only()
@@ -25,6 +27,8 @@ class UserCommands(commands.Cog):
         """
         if ctx.invoked_subcommand is None:
             await self.start(ctx)
+
+    #region End
 
     @fourconnent.command(description="Ends a four connect game",
                          aliases=["e", "stop", "exit", "quit", "leave"])
@@ -60,6 +64,9 @@ class UserCommands(commands.Cog):
                 title="You don't have an active connect four game running!"
             ))
 
+    #endregion
+
+    #region Start
 
     @fourconnent.command(description="Starts a four connect game",
                       aliases=["s"])
@@ -106,9 +113,11 @@ class UserCommands(commands.Cog):
             "message": message
         }
 
+    #endregion
 
+    #endregion
 
-
+    #region Coin Command
 
     @commands.command(aliases=['flip', 'coinflip', 'cf'],
                       ignore_extra=False,
@@ -120,6 +129,10 @@ class UserCommands(commands.Cog):
         if ctx.message.guild:
             await ctx.message.delete()
         await embed_helper.send_coin_flip_embed(ctx.author, ctx, self.bot)
+
+    #endregion
+
+    #region Stats Command
 
     @commands.command(aliases=['botinfo', 'info'],
                       description="Displays information about this bot")
@@ -154,6 +167,10 @@ class UserCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    #endregion
+
+    #region Dice Command
+
     @commands.command(aliases=['roll dice', 'roll', 'rtd'],
                       description="Rolls a dice")
     async def dice(self, ctx: discord.ext.commands.context.Context, *number):
@@ -171,6 +188,10 @@ class UserCommands(commands.Cog):
             max_value = 6
         await embed_helper.send_roll_dice_embed(ctx.author, ctx, self.bot, max_value)
 
+    #endregion
+
+    #region Wipe Command
+
     @commands.command(description="Wipes messages in a channel")
     @commands.guild_only()
     @commands.has_guild_permissions(manage_messages=True)
@@ -185,6 +206,10 @@ class UserCommands(commands.Cog):
         )
         embed.set_footer(text="This message will delete itself after 15 seconds!")
         await ctx.send(embed=embed, delete_after=15)
+
+    #endregion
+
+    #region Member Command
 
     @commands.command(description="Info about a member")
     @commands.guild_only()
@@ -213,6 +238,10 @@ class UserCommands(commands.Cog):
         embed.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed=embed)
 
+    #endregion
+
+    #region Invite Command
+
     @commands.command(description="Sends bot invite link",
                       ignore_extra=False)
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -221,6 +250,10 @@ class UserCommands(commands.Cog):
         Sends an invite link for this bot, so you can add it to you own server.
         """
         await ctx.send(self.bot.config["bot-invite-link"])
+
+    #endregion C
+
+    #region Multi-Quote Command
 
     @commands.command(name="multiquote",
                       aliases=["mq"],
@@ -246,8 +279,9 @@ class UserCommands(commands.Cog):
         for a, q in quotes:
             print(a, q)
 
+    #endregion
 
-
+    #region Quote Command
 
     @commands.command(name="quote",
                       aliases=["q"],
@@ -289,7 +323,9 @@ class UserCommands(commands.Cog):
 
         await quote_channel.send(embed=embed)
 
-    #region Shuffle
+    #endregion
+
+    #region Shuffle Command
 
     @commands.command(name="shuffle",
                       aliases=["random-teams"],
@@ -350,6 +386,7 @@ class UserCommands(commands.Cog):
 
     #endregion
 
+    #region Test Command
     @commands.command(name='test',
                       ignore_extra=False,
                       aliases=['t'],
@@ -365,6 +402,7 @@ class UserCommands(commands.Cog):
 
         await self.bot.add_reaction_listener(test, message, '🙃', add_reaction=True)
 
+    #endregion
 
 def setup(bot):
     bot.add_cog(UserCommands(bot))
