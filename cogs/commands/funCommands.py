@@ -14,19 +14,7 @@ class FunCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
-
-    async def get_dad_joke(self):
-        url = "https://icanhazdadjoke.com/"
-        header = {"Accept": "text/plain"}
-        async with aiohttp.ClientSession(headers=header) as session:
-            async with session.get(url) as response:
-                return await response.text()
-
-    async def get_mom_joke(self):
-        url = "https://api.yomomma.info/"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                return json.loads(await response.text()).get("joke")
+    #region Dad-Joke Command
 
     @commands.command(name="dad-joke",
                       aliases=["dadjoke", "dad"],
@@ -44,6 +32,17 @@ class FunCommands(commands.Cog):
         embed.set_footer(text=f"This dad joke was requested by {ctx.author.name}!")
         await ctx.send(embed=embed)
 
+    async def get_dad_joke(self):
+        url = "https://icanhazdadjoke.com/"
+        header = {"Accept": "text/plain"}
+        async with aiohttp.ClientSession(headers=header) as session:
+            async with session.get(url) as response:
+                return await response.text()
+
+    #endregion
+
+    #region Yo-Mama-Joke Command
+
     @commands.command(name="yo-mama",
                       aliases=["yomoma", "mom"],
                       description="Tells you a random yomomma joke.")
@@ -59,6 +58,15 @@ class FunCommands(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text=f"This yomomma joke was requested by {ctx.author.name}!")
         await ctx.send(embed=embed)
+
+
+    async def get_mom_joke(self):
+        url = "https://api.yomomma.info/"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                return json.loads(await response.text()).get("joke")
+
+    #endregion
 
 def setup(bot):
     bot.add_cog(FunCommands(bot))
