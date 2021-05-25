@@ -14,6 +14,8 @@ class AdminCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
+    #region Prefix Command
+
     @commands.command(description="Changes the bot prefix",
                       aliases=["p"])
     @commands.guild_only()
@@ -32,6 +34,10 @@ class AdminCommands(commands.Cog):
             colour=int(self.bot.config["embed-colours"]["default"], 16)
         ))
 
+    #endregion
+
+    #region Update Commands
+
     @commands.group(description="Updates channel ids for certain commands")
     @commands.guild_only()
     @commands.has_guild_permissions(administrator=True)
@@ -41,6 +47,8 @@ class AdminCommands(commands.Cog):
         """
         if ctx.invoked_subcommand is None:
             raise customErrors.errors.SubCommandRequired()
+
+    #region QuoteChannel
 
     @update.command(name="quote_channel",
                     aliases=["qc"],
@@ -58,6 +66,9 @@ class AdminCommands(commands.Cog):
         async with asyncio.Lock():
             json_helper.write_json("channel", channel_ids)
 
+    #endregion
+
+    #endregion
 
 def setup(bot):
     bot.add_cog(AdminCommands(bot))
