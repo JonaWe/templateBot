@@ -34,6 +34,7 @@ class OwnerCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
+    #region YouTube-To-mp3 Command
 
     @commands.command(name="yt2mp3",
                       aliases=["yt"],
@@ -66,9 +67,9 @@ class OwnerCommands(commands.Cog):
 
             await ctx.send(file=discord.File(f"yt_downloads/{filename}.mp3"))
 
+    #endregion
 
-
-
+    #region Devmode Commands
 
     @commands.group(description="Turning the devmode on an off",
                     aliases=["dm", "d"])
@@ -124,6 +125,10 @@ class OwnerCommands(commands.Cog):
             embed.colour = int(self.bot.config["embed-colours"]["warning"], 16)
             embed.description = "```diff\n- Devmode is currently turned off```"
         await ctx.send(embed=embed)
+
+    #endregion
+
+    #region Blacklist Commands
 
     @commands.group(description="Manage the blacklist")
     @commands.is_owner()
@@ -182,6 +187,10 @@ class OwnerCommands(commands.Cog):
             title=f"`{user.display_name}` has been removed from the blacklist.",
             colour=int(self.bot.config["embed-colours"]["default"], 16)
         ))
+
+    #endregion
+
+    #region Config Commands
 
     @commands.group(description="Manage the config",
                     aliases=["c"])
@@ -242,6 +251,9 @@ class OwnerCommands(commands.Cog):
             colour=int(self.bot.config["embed-colours"]["default"], 16)
         ))
 
+    #endregion
+
+    #region HexToInt Command
 
     @commands.command(description="Converts hex to integer",
                       aliases=['hti'])
@@ -255,6 +267,10 @@ class OwnerCommands(commands.Cog):
             await ctx.send(f"Converted the hex number `{str(hexnumber)}` to the integer `{str(num)}`.")
         except:
             raise commands.BadArgument()
+
+    #endregion
+
+    #region Reload Command
 
     @commands.is_owner()
     @commands.command(description="Reloads COGs",
@@ -318,7 +334,7 @@ class OwnerCommands(commands.Cog):
 
             await ctx.send(embed=embed)
 
-
+    #endregion
 
 def setup(bot):
     bot.add_cog(OwnerCommands(bot))
