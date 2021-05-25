@@ -57,6 +57,8 @@ class MusicCommands(commands.Cog):
     async def on_ready(self):
         print(f"{type(self).__name__} Cog has been loaded\n---------")
 
+    #region Play Command
+
     @commands.command(name="play",
                       enabled=False,
                       description="Plays a song form youtube")
@@ -68,6 +70,10 @@ class MusicCommands(commands.Cog):
             self.players[ctx.guild.id] = ctx.voice_client
         await ctx.send(f"Now playing {player.title}")
 
+    #endregion
+
+    #region Stop Command
+
     @commands.command(name="stop",
                       enabled=False,
                       description="Stops the current song")
@@ -77,6 +83,10 @@ class MusicCommands(commands.Cog):
         if vc:
             vc.stop()
             await ctx.send(f"Stopped playing")
+
+    #endregion
+
+    #region Pause Command
 
     @commands.command(name="pause",
                       enabled=False,
@@ -88,6 +98,10 @@ class MusicCommands(commands.Cog):
             vc.pause()
             await ctx.send(f"Paused playing")
 
+    #endregion
+
+    #region Resume Command
+
     @commands.command(name="resume",
                       enabled=False,
                       description="Resumes the current song")
@@ -98,6 +112,9 @@ class MusicCommands(commands.Cog):
             vc.resume()
             await ctx.send(f"Resumed playing")
 
+    #endregion
+
+    #region Connect Command
 
     @commands.command(name="connect",
                       enabled=False,
@@ -126,6 +143,10 @@ class MusicCommands(commands.Cog):
 
         await ctx.send(f"Connected to {channel.name}")
 
+    #endregion
+
+    #region Disconnect Command
+
     @commands.command(name="disconnect",
                       aliases=["leave"],
                       enabled=False,
@@ -138,6 +159,10 @@ class MusicCommands(commands.Cog):
             await ctx.guild.voice_client.disconnect()
         else:
             await ctx.send("I am currently not connected to any channel")
+
+    #endregion
+
+    #region Volume Command
 
     @commands.command(description="Changes the volume of the bot",
                       enabled=False)
@@ -157,7 +182,7 @@ class MusicCommands(commands.Cog):
 
             await ctx.send(f"Changed the volume to {level}%")
 
-
+    #endregion
 
 def setup(bot):
     bot.add_cog(MusicCommands(bot))
