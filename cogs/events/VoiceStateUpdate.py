@@ -18,8 +18,8 @@ class VoiceStateUpdate(commands.Cog):
             return
 
         if after.channel and after.channel.id == 536969317431115776:
-            await member.send("You are not allowed to join this channel!")
             await member.move_to(None)
+            await member.send("You are not allowed to join this channel!")
 
 
 def setup(bot):
